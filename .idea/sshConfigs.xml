@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="106.14.183.201" id="f3752e10-4359-43d1-9bb4-725999941ef3" port="22" customName="Coun" nameFormat="CUSTOM" useOpenSSHConfig="true">
+        <option name="customName" value="Coun" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>
