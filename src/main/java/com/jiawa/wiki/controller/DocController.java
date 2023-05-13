@@ -33,6 +33,14 @@ public class DocController {
         commentService.save(req);
         return resp;
     }
+    @GetMapping("/comments/{ebookId}")
+    public CommonResp comments(@PathVariable Long ebookId) {
+        CommonResp<List<Comment>> resp = new CommonResp<>();
+        List<Comment> comments = commentService.selectByEbookId(ebookId);
+        resp.setContent(comments);
+        return resp;
+    }
+
     @GetMapping("/all/{ebookId}")
     public CommonResp all(@PathVariable Long ebookId) {
         CommonResp<List<DocQueryResp>> resp = new CommonResp<>();

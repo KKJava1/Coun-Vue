@@ -26,13 +26,14 @@
           <div class="wangeditor" :innerHTML="html"></div>
           <div class="vote-div">
             <a-button style="margin-right: 10px" type="primary" shape="round" :size="'large'"  @click="showDrawer">
-              <template #icon><BarsOutlined />&nbsp;评论：{{doc.voteCount}} </template>
+              <template #icon><BarsOutlined />&nbsp;评论：{{commentCount}} </template>
             </a-button>
             <a-button type="primary" shape="round" :size="'large'" @click="vote">
               <template #icon><LikeOutlined /> &nbsp;点赞：{{doc.voteCount}} </template>
             </a-button>
           </div>
         </a-col>
+
         <a-drawer
             title="评论"
             placement="right"
@@ -42,6 +43,7 @@
             v-model:visible="visible"
             :after-visible-change="afterVisibleChange"
         >
+
           <a-comment :author="username">
             <template #content>
               <a-form-item>
@@ -54,6 +56,17 @@
               </a-form-item>
             </template>
           </a-comment>
+
+          <a-comment
+              v-for="(comment, index) in comments"
+              :key="index"
+              :author="comment.userId"
+          >
+            <template #content>
+              {{comment.content}}
+            </template>
+          </a-comment>
+
         </a-drawer>
       </a-row>
     </a-layout-content>
@@ -70,11 +83,15 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
   export default defineComponent({
     name: 'Doc',
     setup() {
+      // 添加一个用于存储评论的引用
+      const comments = ref([]);
       const route = useRoute();
       const store = useStore();
       const username = computed(() => store.state.user.name);
       const docs = ref();
       const html = ref();
+      //评论数量
+      const commentCount = ref(0);
       //通过传递过来拿到ebookId
       const ebookId =route.query.ebookId;
       const defaultSelectedKeys = ref();
@@ -94,11 +111,17 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
       };
+      // 创建一个方法来获取评论
+      const fetchComments = () => {
+        axios.get('/doc/comments/' + ebookId).then(response => {
+          commentCount.value = response.data.content.length;
+          comments.value = response.data.content;
+        });
+      }
       //提交评论
       const handleSubmitComment = () => {
           //loading界面加载
           submitting.value = true;
-
           const commentData = {
             userId: store.state.user.id, // 从Vuex中获取userId
             ebookId: route.query.ebookId, // 你需要在此处提供电子书的ID
@@ -110,6 +133,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
             if (data.success) {
               submitting.value = false;
               message.success("评论成功");
+              fetchComments();  // 提交评论后刷新评论
             }
             else {
               message.error(data.message);
@@ -118,6 +142,8 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       };
       const showDrawer = () => {
         visible.value = true;
+        //使用懒加载的方案减低性能损耗
+        fetchComments();  // 打开评论按钮时获取评论
       };
       /**
        * 内容查询
@@ -179,6 +205,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
 
       onMounted(() => {
         handleQuery();
+        fetchComments();
       });
 
       return {
@@ -196,6 +223,9 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         commentValue,
         submitting,
         handleSubmitComment,
+        comments,
+        fetchComments,
+        commentCount
       }
     }
   });

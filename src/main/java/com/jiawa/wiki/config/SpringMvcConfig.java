@@ -31,7 +31,8 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/ebook/upload/avatar",
                         "/file/**",
                         "/user/regirster",
-                        "/doc/handleSubmitComment"
+                        "/doc/handleSubmitComment",
+                        "/doc/comments/{ebookId}"
                 );
 
     }

@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -41,5 +43,9 @@ public class CommentService {
         //设置创建时间
         req.setCreateTime(now);
         commentMapper.insert(req);
+    }
+
+    public List<Comment> selectByEbookId(Long ebookId) {
+        return commentMapper.selectListByEbookId(ebookId);
     }
 }

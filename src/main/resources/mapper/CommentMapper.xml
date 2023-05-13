@@ -157,7 +157,10 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <select id="selectListByEbookId" resultType="com.jiawa.wiki.domain.Comment">
+      SELECT * FROM comment WHERE ebook_id = #{ebookId}
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
     update comment
     <set>
       <if test="record.id != null">
