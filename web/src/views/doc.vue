@@ -57,16 +57,23 @@
             </template>
           </a-comment>
 
-          <a-comment
-              v-for="(comment, index) in comments"
-              :key="index"
-              :author="comment.userId"
-              :datetime="formatDate(comment.createTime)"
+          <a-list
+              :header="`${comments.length} 个评论`"
+              item-layout="horizontal"
+              :data-source="comments"
           >
-            <template #content>
-              {{comment.content}}
+            <template #renderItem="{ item, index }">
+              <a-list-item>
+                <a-comment :author="item.userId" :datetime="formatDate(item.createTime)">
+                  <template #content>
+                    <p>
+                      {{ item.content }}
+                    </p>
+                  </template>
+                </a-comment>
+              </a-list-item>
             </template>
-          </a-comment>
+          </a-list>
 
         </a-drawer>
       </a-row>
@@ -115,6 +122,8 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         const date = new Date(dateString);
         return date.toLocaleString(undefined, options);
       }
+
+
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
       };
