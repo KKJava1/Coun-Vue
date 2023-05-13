@@ -61,6 +61,7 @@
               v-for="(comment, index) in comments"
               :key="index"
               :author="comment.userId"
+              :datetime="formatDate(comment.createTime)"
           >
             <template #content>
               {{comment.content}}
@@ -108,6 +109,12 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       //评论窗口是否弹出
       const visible = ref<boolean>(false);
 
+      //将日期格式化
+      const formatDate = (dateString: Date) =>{
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+        const date = new Date(dateString);
+        return date.toLocaleString(undefined, options);
+      }
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
       };
@@ -216,6 +223,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         username,
         doc,
         vote,
+        formatDate,
         ebookId,
         visible,
         afterVisibleChange,
