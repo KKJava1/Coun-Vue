@@ -5,6 +5,8 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="ebook_id" jdbcType="BIGINT" property="ebookId" />
+    <result column="parentId" jdbcType="BIGINT" property="parentid" />
+    <result column="replyToUserId" jdbcType="BIGINT" property="replytouserid" />
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -68,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, ebook_id, content, create_time, update_time
+    id, user_id, ebook_id, parentId, replyToUserId, content, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.jiawa.wiki.domain.CommentExample" resultMap="BaseResultMap">
     select
@@ -102,11 +104,11 @@
   </delete>
   <insert id="insert" parameterType="com.jiawa.wiki.domain.Comment">
     insert into comment (id, user_id, ebook_id, 
-      content, create_time, update_time
-      )
+      parentId, replyToUserId, content, 
+      create_time, update_time)
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{ebookId,jdbcType=BIGINT}, 
-      #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{parentid,jdbcType=BIGINT}, #{replytouserid,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.jiawa.wiki.domain.Comment">
     insert into comment
@@ -119,6 +121,12 @@
       </if>
       <if test="ebookId != null">
         ebook_id,
+      </if>
+      <if test="parentid != null">
+        parentId,
+      </if>
+      <if test="replytouserid != null">
+        replyToUserId,
       </if>
       <if test="content != null">
         content,
@@ -140,6 +148,12 @@
       <if test="ebookId != null">
         #{ebookId,jdbcType=BIGINT},
       </if>
+      <if test="parentid != null">
+        #{parentid,jdbcType=BIGINT},
+      </if>
+      <if test="replytouserid != null">
+        #{replytouserid,jdbcType=BIGINT},
+      </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
       </if>
@@ -157,10 +171,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-    <select id="selectListByEbookId" resultType="com.jiawa.wiki.domain.Comment">
-      SELECT * FROM comment WHERE ebook_id = #{ebookId}
-    </select>
-    <update id="updateByExampleSelective" parameterType="map">
+  <update id="updateByExampleSelective" parameterType="map">
     update comment
     <set>
       <if test="record.id != null">
@@ -171,6 +182,12 @@
       </if>
       <if test="record.ebookId != null">
         ebook_id = #{record.ebookId,jdbcType=BIGINT},
+      </if>
+      <if test="record.parentid != null">
+        parentId = #{record.parentid,jdbcType=BIGINT},
+      </if>
+      <if test="record.replytouserid != null">
+        replyToUserId = #{record.replytouserid,jdbcType=BIGINT},
       </if>
       <if test="record.content != null">
         content = #{record.content,jdbcType=VARCHAR},
@@ -191,6 +208,8 @@
     set id = #{record.id,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=BIGINT},
       ebook_id = #{record.ebookId,jdbcType=BIGINT},
+      parentId = #{record.parentid,jdbcType=BIGINT},
+      replyToUserId = #{record.replytouserid,jdbcType=BIGINT},
       content = #{record.content,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
@@ -206,6 +225,12 @@
       </if>
       <if test="ebookId != null">
         ebook_id = #{ebookId,jdbcType=BIGINT},
+      </if>
+      <if test="parentid != null">
+        parentId = #{parentid,jdbcType=BIGINT},
+      </if>
+      <if test="replytouserid != null">
+        replyToUserId = #{replytouserid,jdbcType=BIGINT},
       </if>
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
@@ -223,6 +248,8 @@
     update comment
     set user_id = #{userId,jdbcType=BIGINT},
       ebook_id = #{ebookId,jdbcType=BIGINT},
+      parentId = #{parentid,jdbcType=BIGINT},
+      replyToUserId = #{replytouserid,jdbcType=BIGINT},
       content = #{content,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}

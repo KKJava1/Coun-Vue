@@ -127,26 +127,37 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       }
       //提交评论
       const handleSubmitComment = () => {
-          //loading界面加载
-          submitting.value = true;
-          const commentData = {
-            userId: store.state.user.id, // 从Vuex中获取userId
-            ebookId: route.query.ebookId, // 你需要在此处提供电子书的ID
-            content: commentValue.value
-          };
+        if (!commentValue.value || !commentValue.value.trim()) {  // 如果评论是空的
+          message.error("评论为空，无法提交，请重新输入");
+          return;
+        }
+        //loading界面加载
+        submitting.value = true;
+        const commentData = {
+          userId: store.state.user.id, // 从Vuex中获取userId
+          ebookId: route.query.ebookId,
+          content: commentValue.value
+        };
 
-          axios.post("/doc/handleSubmitComment/", commentData).then((response)=>{
-            const data = response.data;
-            if (data.success) {
+        axios.post("/doc/handleSubmitComment/", commentData)
+            .then((response) => {
+              const data = response.data;
+              if (data.success) {
+                submitting.value = false;
+                message.success("评论成功");
+                fetchComments();  // 提交评论后刷新评论
+              }
+              else {
+                submitting.value = false;
+                message.error(data.message);
+              }
+            })
+            .catch((error) => {
               submitting.value = false;
-              message.success("评论成功");
-              fetchComments();  // 提交评论后刷新评论
-            }
-            else {
-              message.error(data.message);
-            }
-          })
+              message.error("提交评论失败，原因：" + error.message);
+            });
       };
+
       const showDrawer = () => {
         visible.value = true;
         //使用懒加载的方案减低性能损耗

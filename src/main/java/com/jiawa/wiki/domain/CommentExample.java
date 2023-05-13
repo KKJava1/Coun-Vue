@@ -285,6 +285,126 @@ public class CommentExample {
             return (Criteria) this;
         }
 
+        public Criteria andParentidIsNull() {
+            addCriterion("parentId is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidIsNotNull() {
+            addCriterion("parentId is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidEqualTo(Long value) {
+            addCriterion("parentId =", value, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidNotEqualTo(Long value) {
+            addCriterion("parentId <>", value, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidGreaterThan(Long value) {
+            addCriterion("parentId >", value, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidGreaterThanOrEqualTo(Long value) {
+            addCriterion("parentId >=", value, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidLessThan(Long value) {
+            addCriterion("parentId <", value, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidLessThanOrEqualTo(Long value) {
+            addCriterion("parentId <=", value, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidIn(List<Long> values) {
+            addCriterion("parentId in", values, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidNotIn(List<Long> values) {
+            addCriterion("parentId not in", values, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidBetween(Long value1, Long value2) {
+            addCriterion("parentId between", value1, value2, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andParentidNotBetween(Long value1, Long value2) {
+            addCriterion("parentId not between", value1, value2, "parentid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridIsNull() {
+            addCriterion("replyToUserId is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridIsNotNull() {
+            addCriterion("replyToUserId is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridEqualTo(Long value) {
+            addCriterion("replyToUserId =", value, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridNotEqualTo(Long value) {
+            addCriterion("replyToUserId <>", value, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridGreaterThan(Long value) {
+            addCriterion("replyToUserId >", value, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridGreaterThanOrEqualTo(Long value) {
+            addCriterion("replyToUserId >=", value, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridLessThan(Long value) {
+            addCriterion("replyToUserId <", value, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridLessThanOrEqualTo(Long value) {
+            addCriterion("replyToUserId <=", value, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridIn(List<Long> values) {
+            addCriterion("replyToUserId in", values, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridNotIn(List<Long> values) {
+            addCriterion("replyToUserId not in", values, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridBetween(Long value1, Long value2) {
+            addCriterion("replyToUserId between", value1, value2, "replytouserid");
+            return (Criteria) this;
+        }
+
+        public Criteria andReplytouseridNotBetween(Long value1, Long value2) {
+            addCriterion("replyToUserId not between", value1, value2, "replytouserid");
+            return (Criteria) this;
+        }
+
         public Criteria andContentIsNull() {
             addCriterion("content is null");
             return (Criteria) this;

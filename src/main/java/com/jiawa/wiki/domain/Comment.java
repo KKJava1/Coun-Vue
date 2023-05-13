@@ -9,6 +9,10 @@ public class Comment {
 
     private Long ebookId;
 
+    private Long parentid;
+
+    private Long replytouserid;
+
     private String content;
 
     private Date createTime;
@@ -37,6 +41,22 @@ public class Comment {
 
     public void setEbookId(Long ebookId) {
         this.ebookId = ebookId;
+    }
+
+    public Long getParentid() {
+        return parentid;
+    }
+
+    public void setParentid(Long parentid) {
+        this.parentid = parentid;
+    }
+
+    public Long getReplytouserid() {
+        return replytouserid;
+    }
+
+    public void setReplytouserid(Long replytouserid) {
+        this.replytouserid = replytouserid;
     }
 
     public String getContent() {
@@ -72,6 +92,8 @@ public class Comment {
         sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
         sb.append(", ebookId=").append(ebookId);
+        sb.append(", parentid=").append(parentid);
+        sb.append(", replytouserid=").append(replytouserid);
         sb.append(", content=").append(content);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
