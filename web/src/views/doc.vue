@@ -64,17 +64,29 @@
           >
             <template #renderItem="{ item, index }">
               <a-list-item>
-                <a-comment :author="item.userId" :datetime="formatDate(item.createTime)">
+                <a-button type="link" @click="toggleReplyForm(index)" style="position: absolute; right: 100px;">
+                  <CommentOutlined />{{showReplyForm[index] ? '收起' : '回复'}}
+                </a-button>
+                <a-comment :author="item.userId"
+                           :datetime="formatDate(item.createTime)">
                   <template #content>
                     <p>
                       {{ item.content }}
                     </p>
+                    <div v-if="showReplyForm[index]" style="margin-top: 10px;">
+                      <a-form-item>
+                        <a-textarea style="width: 450px" v-model="replyContent[index]" placeholder="请写下你的回复..." />
+                      </a-form-item>
+                      <a-form-item>
+                        <a-button type="primary" @click="submitReply(index)">提交回复</a-button>
+                      </a-form-item>
+                    </div>
                   </template>
                 </a-comment>
+
               </a-list-item>
             </template>
           </a-list>
-
         </a-drawer>
       </a-row>
     </a-layout-content>
@@ -115,7 +127,22 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       level1.value = [];
       //评论窗口是否弹出
       const visible = ref<boolean>(false);
+      //添加显示回复的响应式
+      const showReply = ref<boolean[]>([]);
+      const replyContent = ref([]);
+      const showReplyForm = ref<boolean[]>([]);
 
+      const toggleReplyForm = (index: number) => {
+        // 切换指定评论的回复表单的可见状态
+        showReplyForm.value[index] = !showReplyForm.value[index];
+      };
+
+      const submitReply = (index: number) => {
+        // 这里是提交回复的逻辑，你可能需要调用 API 来提交回复
+        console.log(replyContent.value[index]);
+        // 提交回复后，隐藏回复输入框
+        showReply.value[index] = false;
+      };
       //将日期格式化
       const formatDate = (dateString: Date) =>{
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
@@ -253,7 +280,12 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         handleSubmitComment,
         comments,
         fetchComments,
-        commentCount
+        commentCount,
+        showReply,
+        replyContent,
+        showReplyForm,
+        submitReply,
+        toggleReplyForm
       }
     }
   });
