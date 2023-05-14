@@ -9,9 +9,9 @@ public class Comment {
 
     private Long ebookId;
 
-    private Long parentid;
+    private Long parentId;
 
-    private Long replytouserid;
+    private Long replytouserId;
 
     private String content;
 
@@ -43,20 +43,20 @@ public class Comment {
         this.ebookId = ebookId;
     }
 
-    public Long getParentid() {
-        return parentid;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setParentid(Long parentid) {
-        this.parentid = parentid;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
-    public Long getReplytouserid() {
-        return replytouserid;
+    public Long getReplytouserId() {
+        return replytouserId;
     }
 
-    public void setReplytouserid(Long replytouserid) {
-        this.replytouserid = replytouserid;
+    public void setReplytouserId(Long replytouserId) {
+        this.replytouserId = replytouserId;
     }
 
     public String getContent() {
@@ -92,8 +92,8 @@ public class Comment {
         sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
         sb.append(", ebookId=").append(ebookId);
-        sb.append(", parentid=").append(parentid);
-        sb.append(", replytouserid=").append(replytouserid);
+        sb.append(", parentId=").append(parentId);
+        sb.append(", replytouserId=").append(replytouserId);
         sb.append(", content=").append(content);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

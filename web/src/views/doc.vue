@@ -104,7 +104,11 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
     name: 'Doc',
     setup() {
       // 添加一个用于存储评论的引用
-      const comments = ref([]);
+      const comments = ref<Comment[]>([]); // Comment 是一个有 id 和 userId 属性的接口
+      interface Comment {
+        id: number;
+        userId: number;
+      }
       const route = useRoute();
       const store = useStore();
       const username = computed(() => store.state.user.name);
@@ -138,10 +142,20 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       };
 
       const submitReply = (index: number) => {
-        // 这里是提交回复的逻辑，你可能需要调用 API 来提交回复
-        console.log(replyContent.value[index]);
-        // 提交回复后，隐藏回复输入框
-        showReply.value[index] = false;
+          const item =comments.value[index];
+          console.log(replyContent.value[index]);
+          const commentReplyData = {
+            userId: store.state.user.id, // 从Vuex中获取userId
+            ebookId: route.query.ebookId,
+            content: replyContent.value[index],
+            parentId: item.id,
+            replyToUserId : item.userId
+          };
+        axios.post("/doc/handleReplyComment/", commentReplyData).then((response)=>{
+          console.log("回复的信息",response.data);
+        })
+          // 提交回复后，隐藏回复输入框
+          showReply.value[index] = false;
       };
       //将日期格式化
       const formatDate = (dateString: Date) =>{

@@ -285,123 +285,123 @@ public class CommentExample {
             return (Criteria) this;
         }
 
-        public Criteria andParentidIsNull() {
-            addCriterion("parentId is null");
+        public Criteria andParentIdIsNull() {
+            addCriterion("parent_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andParentidIsNotNull() {
-            addCriterion("parentId is not null");
+        public Criteria andParentIdIsNotNull() {
+            addCriterion("parent_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andParentidEqualTo(Long value) {
-            addCriterion("parentId =", value, "parentid");
+        public Criteria andParentIdEqualTo(Long value) {
+            addCriterion("parent_id =", value, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidNotEqualTo(Long value) {
-            addCriterion("parentId <>", value, "parentid");
+        public Criteria andParentIdNotEqualTo(Long value) {
+            addCriterion("parent_id <>", value, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidGreaterThan(Long value) {
-            addCriterion("parentId >", value, "parentid");
+        public Criteria andParentIdGreaterThan(Long value) {
+            addCriterion("parent_id >", value, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidGreaterThanOrEqualTo(Long value) {
-            addCriterion("parentId >=", value, "parentid");
+        public Criteria andParentIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("parent_id >=", value, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidLessThan(Long value) {
-            addCriterion("parentId <", value, "parentid");
+        public Criteria andParentIdLessThan(Long value) {
+            addCriterion("parent_id <", value, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidLessThanOrEqualTo(Long value) {
-            addCriterion("parentId <=", value, "parentid");
+        public Criteria andParentIdLessThanOrEqualTo(Long value) {
+            addCriterion("parent_id <=", value, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidIn(List<Long> values) {
-            addCriterion("parentId in", values, "parentid");
+        public Criteria andParentIdIn(List<Long> values) {
+            addCriterion("parent_id in", values, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidNotIn(List<Long> values) {
-            addCriterion("parentId not in", values, "parentid");
+        public Criteria andParentIdNotIn(List<Long> values) {
+            addCriterion("parent_id not in", values, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidBetween(Long value1, Long value2) {
-            addCriterion("parentId between", value1, value2, "parentid");
+        public Criteria andParentIdBetween(Long value1, Long value2) {
+            addCriterion("parent_id between", value1, value2, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andParentidNotBetween(Long value1, Long value2) {
-            addCriterion("parentId not between", value1, value2, "parentid");
+        public Criteria andParentIdNotBetween(Long value1, Long value2) {
+            addCriterion("parent_id not between", value1, value2, "parentId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridIsNull() {
-            addCriterion("replyToUserId is null");
+        public Criteria andReplytouserIdIsNull() {
+            addCriterion("replyToUser_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridIsNotNull() {
-            addCriterion("replyToUserId is not null");
+        public Criteria andReplytouserIdIsNotNull() {
+            addCriterion("replyToUser_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridEqualTo(Long value) {
-            addCriterion("replyToUserId =", value, "replytouserid");
+        public Criteria andReplytouserIdEqualTo(Long value) {
+            addCriterion("replyToUser_id =", value, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridNotEqualTo(Long value) {
-            addCriterion("replyToUserId <>", value, "replytouserid");
+        public Criteria andReplytouserIdNotEqualTo(Long value) {
+            addCriterion("replyToUser_id <>", value, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridGreaterThan(Long value) {
-            addCriterion("replyToUserId >", value, "replytouserid");
+        public Criteria andReplytouserIdGreaterThan(Long value) {
+            addCriterion("replyToUser_id >", value, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridGreaterThanOrEqualTo(Long value) {
-            addCriterion("replyToUserId >=", value, "replytouserid");
+        public Criteria andReplytouserIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("replyToUser_id >=", value, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridLessThan(Long value) {
-            addCriterion("replyToUserId <", value, "replytouserid");
+        public Criteria andReplytouserIdLessThan(Long value) {
+            addCriterion("replyToUser_id <", value, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridLessThanOrEqualTo(Long value) {
-            addCriterion("replyToUserId <=", value, "replytouserid");
+        public Criteria andReplytouserIdLessThanOrEqualTo(Long value) {
+            addCriterion("replyToUser_id <=", value, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridIn(List<Long> values) {
-            addCriterion("replyToUserId in", values, "replytouserid");
+        public Criteria andReplytouserIdIn(List<Long> values) {
+            addCriterion("replyToUser_id in", values, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridNotIn(List<Long> values) {
-            addCriterion("replyToUserId not in", values, "replytouserid");
+        public Criteria andReplytouserIdNotIn(List<Long> values) {
+            addCriterion("replyToUser_id not in", values, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridBetween(Long value1, Long value2) {
-            addCriterion("replyToUserId between", value1, value2, "replytouserid");
+        public Criteria andReplytouserIdBetween(Long value1, Long value2) {
+            addCriterion("replyToUser_id between", value1, value2, "replytouserId");
             return (Criteria) this;
         }
 
-        public Criteria andReplytouseridNotBetween(Long value1, Long value2) {
-            addCriterion("replyToUserId not between", value1, value2, "replytouserid");
+        public Criteria andReplytouserIdNotBetween(Long value1, Long value2) {
+            addCriterion("replyToUser_id not between", value1, value2, "replytouserId");
             return (Criteria) this;
         }
 
