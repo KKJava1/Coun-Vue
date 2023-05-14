@@ -8,7 +8,7 @@ public enum BusinessExceptionCode {
 
     Commit("评论为空，无法提交，请重新输入"),
 
-    User_Ebook("系统异常")
+    User_Ebook("请先登录用户")
     ;
 
     private String desc;

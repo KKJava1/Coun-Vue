@@ -30,7 +30,7 @@ public interface CommentMapper {
 
     int updateByPrimaryKey(Comment record);
 
-    List<Comment> selectListByEbookId(Long ebookId);
+    List<CommentResp> selectListByEbookId(Long ebookId);
 
     int insertCommentResp(CommentResp req);
 

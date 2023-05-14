@@ -83,7 +83,6 @@
                     </div>
                   </template>
                 </a-comment>
-
               </a-list-item>
             </template>
           </a-list>
@@ -157,9 +156,13 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
           };
         axios.post("/doc/handleReplyComment/", commentReplyData).then((response)=>{
           console.log("回复的信息",response.data);
+          const data = response.data
+          if(data.success){
+            message.success("回复成功")
+            // 提交回复后，隐藏回复输入框
+            showReplyForm.value[index] = !showReplyForm.value[index];
+          }
         })
-          // 提交回复后，隐藏回复输入框
-          showReply.value[index] = false;
       };
       //将日期格式化
       const formatDate = (dateString: Date) =>{
@@ -177,6 +180,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         axios.get('/doc/comments/' + ebookId).then(response => {
           commentCount.value = response.data.content.length;
           comments.value = response.data.content;
+          console.log('评论列表',response.data.content)
         });
       }
       //提交评论

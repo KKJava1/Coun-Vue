@@ -176,7 +176,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <select id="selectListByEbookId" resultType="com.jiawa.wiki.domain.Comment">
+  <select id="selectListByEbookId" resultType="com.jiawa.wiki.resp.CommentResp">
     select * from comment where ebook_id = #{ebookId}
   </select>
   <select id="selectByCommentRespId" resultType="com.jiawa.wiki.resp.CommentResp">

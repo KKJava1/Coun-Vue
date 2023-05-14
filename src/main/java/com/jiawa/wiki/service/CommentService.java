@@ -37,7 +37,7 @@ public class CommentService {
         }
         User user = userMapper.selectByPrimaryKey(req.getUserId());
         Ebook ebook = ebookMapper.selectByPrimaryKey(req.getEbookId());
-        if(user==null&& ebook==null){
+        if(user==null){
             throw new BusinessException(BusinessExceptionCode.User_Ebook);
         }
         Date now = new Date();
@@ -46,9 +46,21 @@ public class CommentService {
         commentMapper.insert(req);
     }
 
-    public List<Comment> selectByEbookId(Long ebookId) {
-        return commentMapper.selectListByEbookId(ebookId);
+    public List<CommentResp> selectByEbookId(Long ebookId) {
+        List<CommentResp> comments = commentMapper.selectListByEbookId(ebookId);
+
+        for (CommentResp comment : comments) {
+            User user = userMapper.selectByPrimaryKey(comment.getUserId());
+            comment.setName(user.getName());
+
+            if (comment.getReplytouserId() != null) {
+                User replyuser = userMapper.selectByPrimaryKey(comment.getReplytouserId());
+                comment.setReplyname(replyuser.getName());
+            }
+        }
+        return comments;
     }
+
 
     //回复评论
     public CommentResp saveReply(CommentResp req) {
