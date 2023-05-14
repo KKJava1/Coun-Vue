@@ -9,6 +9,7 @@ import com.jiawa.wiki.mapper.CommentMapper;
 import com.jiawa.wiki.mapper.DocMapper;
 import com.jiawa.wiki.mapper.EbookMapper;
 import com.jiawa.wiki.mapper.UserMapper;
+import com.jiawa.wiki.resp.CommentResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -47,5 +48,23 @@ public class CommentService {
 
     public List<Comment> selectByEbookId(Long ebookId) {
         return commentMapper.selectListByEbookId(ebookId);
+    }
+
+    //回复评论
+    public CommentResp saveReply(CommentResp req) {
+        if(req.getContent() == ""){
+            throw new BusinessException(BusinessExceptionCode.Commit);
+        }
+        User user = userMapper.selectByPrimaryKey(req.getUserId());
+        User replyuser = userMapper.selectByPrimaryKey(req.getReplytouserId());
+        Date now = new Date();
+        //设置创建时间
+        req.setCreateTime(now);
+        commentMapper.insertCommentResp(req);
+        // 使用这个 ID 来查询并返回新插入的数据
+        CommentResp commentResp = commentMapper.selectByCommentRespId(req.getId());
+        commentResp.setName(user.getName());
+        commentResp.setReplyname(replyuser.getName());
+        return commentResp;
     }
 }

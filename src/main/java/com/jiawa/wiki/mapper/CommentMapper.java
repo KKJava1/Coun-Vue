@@ -3,6 +3,8 @@ package com.jiawa.wiki.mapper;
 import com.jiawa.wiki.domain.Comment;
 import com.jiawa.wiki.domain.CommentExample;
 import java.util.List;
+
+import com.jiawa.wiki.resp.CommentResp;
 import org.apache.ibatis.annotations.Param;
 
 public interface CommentMapper {
@@ -27,4 +29,10 @@ public interface CommentMapper {
     int updateByPrimaryKeySelective(Comment record);
 
     int updateByPrimaryKey(Comment record);
+
+    List<Comment> selectListByEbookId(Long ebookId);
+
+    int insertCommentResp(CommentResp req);
+
+    CommentResp selectByCommentRespId(Long id);
 }

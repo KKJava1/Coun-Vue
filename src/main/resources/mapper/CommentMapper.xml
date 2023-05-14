@@ -165,11 +165,22 @@
       </if>
     </trim>
   </insert>
+  <insert id="insertCommentResp" parameterType="com.jiawa.wiki.resp.CommentResp" useGeneratedKeys="true" keyProperty="id">
+    insert into comment(user_id,ebook_id,parent_id,replyToUser_id,content,create_time,update_time)
+    VALUES (#{userId}, #{ebookId}, #{parentId}, #{replytouserId}, #{content}, #{createTime}, #{updateTime})
+  </insert>
+
   <select id="countByExample" parameterType="com.jiawa.wiki.domain.CommentExample" resultType="java.lang.Long">
     select count(*) from comment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
+  </select>
+  <select id="selectListByEbookId" resultType="com.jiawa.wiki.domain.Comment">
+    select * from comment where ebook_id = #{ebookId}
+  </select>
+  <select id="selectByCommentRespId" resultType="com.jiawa.wiki.resp.CommentResp">
+    select * from comment where id=#{id}
   </select>
   <update id="updateByExampleSelective" parameterType="map">
     update comment

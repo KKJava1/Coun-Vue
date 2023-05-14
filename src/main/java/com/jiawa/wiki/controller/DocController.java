@@ -3,6 +3,7 @@ package com.jiawa.wiki.controller;
 import com.jiawa.wiki.domain.Comment;
 import com.jiawa.wiki.req.DocQueryReq;
 import com.jiawa.wiki.req.DocSaveReq;
+import com.jiawa.wiki.resp.CommentResp;
 import com.jiawa.wiki.resp.DocQueryResp;
 import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.PageResp;
@@ -31,6 +32,15 @@ public class DocController {
     public CommonResp handleSubmitComment(@Valid @RequestBody Comment req) {
         CommonResp resp = new CommonResp<>();
         commentService.save(req);
+        return resp;
+    }
+
+    //回复评论
+    @PostMapping("/handleReplyComment")
+    public CommonResp<CommentResp> handleReplyComment(@Valid @RequestBody CommentResp req) {
+        CommonResp<CommentResp> resp = new CommonResp<>();
+        CommentResp commentResp = commentService.saveReply(req);
+        resp.setContent(commentResp);
         return resp;
     }
     @GetMapping("/comments/{ebookId}")

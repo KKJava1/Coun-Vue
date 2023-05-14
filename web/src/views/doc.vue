@@ -75,7 +75,7 @@
                     </p>
                     <div v-if="showReplyForm[index]" style="margin-top: 10px;">
                       <a-form-item>
-                        <a-textarea style="width: 450px" v-model="replyContent[index]" placeholder="请写下你的回复..." />
+                        <a-textarea style="width: 450px" v-model:value="replyContent[index]" placeholder="请写下你的回复..." />
                       </a-form-item>
                       <a-form-item>
                         <a-button type="primary" @click="submitReply(index)">提交回复</a-button>
@@ -108,6 +108,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       interface Comment {
         id: number;
         userId: number;
+
       }
       const route = useRoute();
       const store = useStore();
@@ -142,14 +143,17 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       };
 
       const submitReply = (index: number) => {
+        if (!replyContent.value[index]) {  // 如果评论是空的
+          message.error("评论为空，无法提交，请重新输入");
+          return;
+        }
           const item =comments.value[index];
-          console.log(replyContent.value[index]);
           const commentReplyData = {
             userId: store.state.user.id, // 从Vuex中获取userId
             ebookId: route.query.ebookId,
             content: replyContent.value[index],
             parentId: item.id,
-            replyToUserId : item.userId
+            replytouserId : item.userId
           };
         axios.post("/doc/handleReplyComment/", commentReplyData).then((response)=>{
           console.log("回复的信息",response.data);
