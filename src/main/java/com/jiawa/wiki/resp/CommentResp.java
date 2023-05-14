@@ -1,6 +1,10 @@
 package com.jiawa.wiki.resp;
 
+import com.jiawa.wiki.domain.Comment;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CommentResp {
     private Long id;
@@ -20,6 +24,15 @@ public class CommentResp {
     private String content;
 
     private Date createTime;
+
+    private List<CommentResp> replies = new ArrayList<>();
+
+    public List<CommentResp> getReplies() {
+        return replies;
+    }
+    public void setReplies(List<CommentResp> replies) {
+        this.replies = replies;
+    }
 
     private Date updateTime;
 

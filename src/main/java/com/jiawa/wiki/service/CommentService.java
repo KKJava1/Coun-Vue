@@ -12,12 +12,11 @@ import com.jiawa.wiki.mapper.UserMapper;
 import com.jiawa.wiki.resp.CommentResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CommentService {
@@ -47,19 +46,36 @@ public class CommentService {
     }
 
     public List<CommentResp> selectByEbookId(Long ebookId) {
-        List<CommentResp> comments = commentMapper.selectListByEbookId(ebookId);
-
-        for (CommentResp comment : comments) {
+        List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
+        List<CommentResp> processedComments = new ArrayList<>();
+        // 将主评论添加到processedComments数组中
+        for (CommentResp comment : rawComments) {
             User user = userMapper.selectByPrimaryKey(comment.getUserId());
             comment.setName(user.getName());
-
             if (comment.getReplytouserId() != null) {
                 User replyuser = userMapper.selectByPrimaryKey(comment.getReplytouserId());
                 comment.setReplyname(replyuser.getName());
             }
+
+            if (comment.getParentId() == null) { // 主评论
+                comment.setReplies(new ArrayList<>()); // 添加空的replies数组
+                processedComments.add(comment); // 添加到处理后的评论数组
+            }
         }
-        return comments;
+        // 将回复评论添加到对应的主评论的replies数组中
+        for (CommentResp reply : rawComments) {
+            if (reply.getParentId() != null) { // 回复评论
+                for (CommentResp parentComment : processedComments) {
+                    if (parentComment.getId().equals(reply.getParentId())) {
+                        parentComment.getReplies().add(reply);
+                        break;
+                    }
+                }
+            }
+        }
+        return processedComments;
     }
+
 
 
     //回复评论
@@ -79,4 +95,7 @@ public class CommentService {
         commentResp.setReplyname(replyuser.getName());
         return commentResp;
     }
+
+
+
 }

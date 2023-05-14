@@ -184,27 +184,16 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       // 创建一个方法来获取评论
       const fetchComments = () => {
         axios.get('/doc/comments/' + ebookId).then(response => {
-          const rawComments = response.data.content;
-          console.log("fetchComments",rawComments);
-          const processedComments: any[] = [];
-          rawComments.forEach((comment: { parentId: null; replies: never[] }) => {
-            if (comment.parentId === null) { // 主评论
-              comment.replies = []; // 添加空的replies数组
-              processedComments.push(comment); // 添加到处理后的评论数组
-            }
-          });
-          rawComments.forEach((reply: { parentId: null}) => {
-            if (reply.parentId !== null) { // 回复评论
-              const parentComment = processedComments.find(comment => comment.id === reply.parentId);
-              if (parentComment) {
-                parentComment.replies.push(reply); // 添加回复到对应的主评论的replies数组
-              }
-            }
-          });
-          commentCount.value = processedComments.length;
-          comments.value = processedComments;
+          console.log('评论jujujuju列表',response.data)
+          const fetchedComments = response.data.content;
+          commentCount.value = fetchedComments.length;
+          comments.value = fetchedComments;
+          console.log('评论列表', comments.value);
         });
       }
+
+
+
 
       //提交评论
       const handleSubmitComment = () => {
