@@ -57,22 +57,28 @@
             </template>
           </a-comment>
 
-          <a-list
-              :header="`${comments.length} 个评论`"
-              item-layout="horizontal"
-              :data-source="comments"
-          >
+          <a-list :header="`${comments.length} 个评论`" item-layout="horizontal" :data-source="comments">
             <template #renderItem="{ item, index }">
               <a-list-item>
-                <a-button type="link" @click="toggleReplyForm(index)" style="position: absolute; right: 100px;">
+                <a-button type="link" @click="toggleReplyForm(index)" style="position: absolute; right: 50px;">
                   <CommentOutlined />{{showReplyForm[index] ? '收起' : '回复'}}
                 </a-button>
-                <a-comment :author="item.userId"
-                           :datetime="formatDate(item.createTime)">
+                <a-comment :author="item.name" :datetime="formatDate(item.createTime)">
                   <template #content>
                     <p>
                       {{ item.content }}
                     </p>
+                    <div v-for="(reply, replyIndex) in item.replies" :key="replyIndex">
+                      <a-comment
+                          :author="reply.name"
+                          :datetime="formatDate(reply.createTime)">
+                        <template #content>
+                          <p>
+                            {{ reply.content }}
+                          </p>
+                        </template>
+                      </a-comment>
+                    </div>
                     <div v-if="showReplyForm[index]" style="margin-top: 10px;">
                       <a-form-item>
                         <a-textarea style="width: 450px" v-model:value="replyContent[index]" placeholder="请写下你的回复..." />
@@ -86,6 +92,8 @@
               </a-list-item>
             </template>
           </a-list>
+
+
         </a-drawer>
       </a-row>
     </a-layout-content>
@@ -102,12 +110,12 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
   export default defineComponent({
     name: 'Doc',
     setup() {
+
       // 添加一个用于存储评论的引用
       const comments = ref<Comment[]>([]); // Comment 是一个有 id 和 userId 属性的接口
       interface Comment {
         id: number;
         userId: number;
-
       }
       const route = useRoute();
       const store = useStore();
@@ -140,7 +148,16 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         // 切换指定评论的回复表单的可见状态
         showReplyForm.value[index] = !showReplyForm.value[index];
       };
-
+      //将日期格式化
+      const formatDate = (dateString: Date) =>{
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+        const date = new Date(dateString);
+        return date.toLocaleString(undefined, options);
+      }
+      const afterVisibleChange = (bool: boolean) => {
+        console.log('visible', bool);
+      };
+      //回复评论
       const submitReply = (index: number) => {
         if (!replyContent.value[index]) {  // 如果评论是空的
           message.error("评论为空，无法提交，请重新输入");
@@ -160,29 +177,35 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
           if(data.success){
             message.success("回复成功")
             // 提交回复后，隐藏回复输入框
-            showReplyForm.value[index] = !showReplyForm.value[index];
+            showReplyForm.value[index] = !showReplyForm.value[index]
           }
         })
-      };
-      //将日期格式化
-      const formatDate = (dateString: Date) =>{
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-        const date = new Date(dateString);
-        return date.toLocaleString(undefined, options);
       }
-
-
-      const afterVisibleChange = (bool: boolean) => {
-        console.log('visible', bool);
-      };
       // 创建一个方法来获取评论
       const fetchComments = () => {
         axios.get('/doc/comments/' + ebookId).then(response => {
-          commentCount.value = response.data.content.length;
-          comments.value = response.data.content;
-          console.log('评论列表',response.data.content)
+          const rawComments = response.data.content;
+          console.log("fetchComments",rawComments);
+          const processedComments: any[] = [];
+          rawComments.forEach((comment: { parentId: null; replies: never[] }) => {
+            if (comment.parentId === null) { // 主评论
+              comment.replies = []; // 添加空的replies数组
+              processedComments.push(comment); // 添加到处理后的评论数组
+            }
+          });
+          rawComments.forEach((reply: { parentId: null}) => {
+            if (reply.parentId !== null) { // 回复评论
+              const parentComment = processedComments.find(comment => comment.id === reply.parentId);
+              if (parentComment) {
+                parentComment.replies.push(reply); // 添加回复到对应的主评论的replies数组
+              }
+            }
+          });
+          commentCount.value = processedComments.length;
+          comments.value = processedComments;
         });
       }
+
       //提交评论
       const handleSubmitComment = () => {
         if (!commentValue.value || !commentValue.value.trim()) {  // 如果评论是空的
