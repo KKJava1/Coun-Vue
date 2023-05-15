@@ -59,8 +59,7 @@
           <a-list :header="`${comments.length} 个评论`" item-layout="horizontal" :data-source="comments">
             <template #renderItem="{ item, index }">
               <a-list-item>
-                <!-- 对每个顶级评论，使用 CommentComponent -->
-                <CommentComponent :comment="item" />
+                <CommentComponent :comment="item" @reply="handleReply(index)" />
               </a-list-item>
             </template>
           </a-list>
@@ -134,30 +133,27 @@ import CommentComponent from './assembly/commpent.vue';
       }
 
       //回复评论
-      const submitReply = (index: number) => {
-        if (!replyContent.value[index]) {  // 如果评论是空的
-          message.error("评论为空，无法提交，请重新输入");
-          return;
-        }
-          const item =comments.value[index];
-          const commentReplyData = {
-            userId: store.state.user.id, // 从Vuex中获取userId
-            ebookId: route.query.ebookId,
-            content: replyContent.value[index],
-            parentId: item.id,
-            replytouserId : item.userId
-          };
-        axios.post("/doc/handleReplyComment/", commentReplyData).then((response)=>{
-          console.log("回复的信息",response.data);
-          const data = response.data
-          if(data.success){
-            message.success("回复成功")
-            // 提交回复后，隐藏回复输入框
-            showReplyForm.value[index] = !showReplyForm.value[index]
-            fetchComments()
-          }
-        })
-      }
+      const handleReply = (reply: { content: any;parentId: any;replytouserId: any}) => {
+        const commentReplyData = {
+          userId: store.state.user.id, // 从Vuex中获取userId
+          ebookId: route.query.ebookId,
+          content: reply.content,
+          parentId: reply.parentId,
+          replytouserId : reply.replytouserId
+        };
+
+        axios.post("/doc/handleReplyComment/", commentReplyData)
+            .then((response) => {
+              const data = response.data
+              if(data.success){
+                message.success("回复成功")
+                fetchComments()
+              }
+            })
+            .catch((error) => {
+              message.error("回复失败，原因：" + error.message);
+            });
+      };
       //提交评论
       const handleSubmitComment = () => {
         if (!commentValue.value || !commentValue.value.trim()) {  // 如果评论是空的
@@ -281,7 +277,7 @@ import CommentComponent from './assembly/commpent.vue';
         showReply,
         replyContent,
         showReplyForm,
-        submitReply,
+        handleReply,
         toggleReplyForm
       }
     }

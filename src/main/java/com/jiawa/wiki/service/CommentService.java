@@ -59,7 +59,7 @@ public class CommentService {
                 User replyuser = userMapper.selectByPrimaryKey(comment.getReplytouserId());
                 comment.setReplyname(replyuser.getName());
             }
-        }
+         }
         // 递归地添加每个评论的所有回复
         for (CommentResp comment : rawComments) {
             addReplies(comment, repliesMap);
