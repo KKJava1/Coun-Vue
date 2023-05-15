@@ -56,41 +56,11 @@
               </a-form-item>
             </template>
           </a-comment>
-
           <a-list :header="`${comments.length} 个评论`" item-layout="horizontal" :data-source="comments">
             <template #renderItem="{ item, index }">
               <a-list-item>
-                <a-comment :author="item.name" :datetime="item.createTime">
-                  <template #actions>
-                    <a-button type="link" @click="toggleReplyForm(index)">
-                      <CommentOutlined />{{showReplyForm[index] ? '收起' : '回复'}}
-                    </a-button>
-                  </template>
-                  <template #content>
-                    <p>
-                      {{ item.content }}
-                    </p>
-                    <div v-for="(reply, replyIndex) in item.replies" :key="replyIndex">
-                      <a-comment
-                          :author="reply.name"
-                          :datetime="reply.createTime">
-                        <template #content>
-                          <p>
-                            {{ reply.content }}
-                          </p>
-                        </template>
-                      </a-comment>
-                    </div>
-                    <div v-if="showReplyForm[index]" style="margin-top: 10px;">
-                      <a-form-item>
-                        <a-textarea style="width: 450px" v-model:value="replyContent[index]" placeholder="请写下你的回复..." />
-                      </a-form-item>
-                      <a-form-item>
-                        <a-button type="primary" @click="submitReply(index)">提交回复</a-button>
-                      </a-form-item>
-                    </div>
-                  </template>
-                </a-comment>
+                <!-- 对每个顶级评论，使用 CommentComponent -->
+                <CommentComponent :comment="item" />
               </a-list-item>
             </template>
           </a-list>
@@ -107,8 +77,12 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
   import {Tool} from "@/util/tool";
   import {useRoute} from "vue-router";
   import {useStore} from 'vuex';
+import CommentComponent from './assembly/commpent.vue';
   export default defineComponent({
     name: 'Doc',
+    components: {
+      CommentComponent,
+    },
     setup() {
       // 添加一个用于存储评论的引用
       const comments = ref<Comment[]>([]); // Comment 是一个有 id 和 userId 属性的接口
@@ -291,6 +265,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         level1,
         html,
         onSelect,
+        CommentComponent,
         defaultSelectedKeys,
         username,
         doc,

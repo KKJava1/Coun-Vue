@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -48,37 +49,41 @@ public class CommentService {
 
     public List<CommentResp> selectByEbookId(Long ebookId) {
         List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
-        List<CommentResp> processedComments = new ArrayList<>();
 
-        // 将主评论添加到processedComments数组中
+        // 创建一个映射，用于快速查找每个评论的所有直接回复
+        Map<Long, List<CommentResp>> repliesMap = new HashMap<>();
         for (CommentResp comment : rawComments) {
-            User user = userMapper.selectByPrimaryKey(comment.getUserId());
-            comment.setName(user.getName());
-            if (comment.getReplytouserId() != null) {
-                User replyuser = userMapper.selectByPrimaryKey(comment.getReplytouserId());
-                comment.setReplyname(replyuser.getName());
-            }
-
-            if (comment.getParentId() == null) { // 主评论
-                comment.setReplies(new ArrayList<>()); // 添加空的replies数组
-                processedComments.add(comment); // 添加到处理后的评论数组
-            }
-
-        }
-        // 将回复评论添加到对应的主评论的replies数组中
-        for (CommentResp reply : rawComments) {
-            if (reply.getParentId() != null) { // 回复评论
-                for (CommentResp parentComment : processedComments) {
-                    if (parentComment.getId().equals(reply.getParentId())) {
-                        parentComment.getReplies().add(reply);
-                        break;
-                    }
-                }
+            if (comment.getParentId() != null) {
+                repliesMap.computeIfAbsent(comment.getParentId(), k -> new ArrayList<>()).add(comment);
             }
         }
+        // 递归地添加每个评论的所有回复
+        for (CommentResp comment : rawComments) {
+            addReplies(comment, repliesMap);
+        }
 
-        return processedComments;
+        // 过滤出所有顶级评论（即没有父评论的评论）
+        List<CommentResp> topComments = rawComments.stream()
+                .filter(comment -> comment.getParentId() == null)
+                .collect(Collectors.toList());
+
+        return topComments;
     }
+    //递归
+    private void addReplies(CommentResp comment, Map<Long, List<CommentResp>> repliesMap) {
+        List<CommentResp> directReplies = repliesMap.get(comment.getId());
+        if (directReplies == null) {
+            // 如果没有直接回复，就添加一个空数组
+            comment.setReplies(new ArrayList<>());
+        } else {
+            // 如果有直接回复，就递归地添加它们的所有回复
+            for (CommentResp reply : directReplies) {
+                addReplies(reply, repliesMap);
+            }
+            comment.setReplies(directReplies);
+        }
+    }
+
 
 
 
