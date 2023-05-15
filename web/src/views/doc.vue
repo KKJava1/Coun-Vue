@@ -89,7 +89,6 @@ import CommentComponent from './assembly/commpent.vue';
       interface Comment {
         id: number;
         userId: number;
-
       }
       const route = useRoute();
       const store = useStore();
@@ -131,7 +130,6 @@ import CommentComponent from './assembly/commpent.vue';
           const fetchedComments = response.data.content;
           commentCount.value = fetchedComments.length;
           comments.value = fetchedComments;
-          console.log('评论列表', comments.value);
         });
       }
 

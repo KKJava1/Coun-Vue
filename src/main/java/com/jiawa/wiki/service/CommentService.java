@@ -49,19 +49,21 @@ public class CommentService {
 
     public List<CommentResp> selectByEbookId(Long ebookId) {
         List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
-
         // 创建一个映射，用于快速查找每个评论的所有直接回复
         Map<Long, List<CommentResp>> repliesMap = new HashMap<>();
         for (CommentResp comment : rawComments) {
+            User user = userMapper.selectByPrimaryKey(comment.getUserId());
+            comment.setName(user.getName());
             if (comment.getParentId() != null) {
                 repliesMap.computeIfAbsent(comment.getParentId(), k -> new ArrayList<>()).add(comment);
+                User replyuser = userMapper.selectByPrimaryKey(comment.getReplytouserId());
+                comment.setReplyname(replyuser.getName());
             }
         }
         // 递归地添加每个评论的所有回复
         for (CommentResp comment : rawComments) {
             addReplies(comment, repliesMap);
         }
-
         // 过滤出所有顶级评论（即没有父评论的评论）
         List<CommentResp> topComments = rawComments.stream()
                 .filter(comment -> comment.getParentId() == null)
