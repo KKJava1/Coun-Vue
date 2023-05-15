@@ -107,11 +107,6 @@
           title: '名称',
           dataIndex: 'name'
         },
-        // {
-        //   title: '父分类',
-        //   key: 'parent',
-        //   dataIndex: 'parent'
-        // },
         {
           title: '顺序',
           dataIndex: 'sort'
@@ -122,18 +117,6 @@
           slots: { customRender: 'action' }
         }
       ];
-
-      /**
-       * 一级分类树，children属性就是二级分类
-       * [{
-       *   id: "",
-       *   name: "",
-       *   children: [{
-       *     id: "",
-       *     name: "",
-       *   }]
-       * }]
-       */
       const level1 = ref(); // 一级分类树，children属性就是二级分类
       level1.value = [];
 
@@ -214,20 +197,16 @@
 
       return {
         param,
-        // categorys,
         level1,
         columns,
         loading,
         handleQuery,
-
         edit,
         add,
-
         category,
         modalVisible,
         modalLoading,
         handleModalOk,
-
         handleDelete
       }
     }

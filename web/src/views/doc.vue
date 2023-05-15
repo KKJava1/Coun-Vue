@@ -60,10 +60,12 @@
           <a-list :header="`${comments.length} 个评论`" item-layout="horizontal" :data-source="comments">
             <template #renderItem="{ item, index }">
               <a-list-item>
-                <a-button type="link" @click="toggleReplyForm(index)" style="position: absolute; right: 50px;">
-                  <CommentOutlined />{{showReplyForm[index] ? '收起' : '回复'}}
-                </a-button>
-                <a-comment :author="item.name" :datetime="formatDate(item.createTime)">
+                <a-comment :author="item.name" :datetime="item.createTime">
+                  <template #actions>
+                    <a-button type="link" @click="toggleReplyForm(index)">
+                      <CommentOutlined />{{showReplyForm[index] ? '收起' : '回复'}}
+                    </a-button>
+                  </template>
                   <template #content>
                     <p>
                       {{ item.content }}
@@ -71,7 +73,7 @@
                     <div v-for="(reply, replyIndex) in item.replies" :key="replyIndex">
                       <a-comment
                           :author="reply.name"
-                          :datetime="formatDate(reply.createTime)">
+                          :datetime="reply.createTime">
                         <template #content>
                           <p>
                             {{ reply.content }}
@@ -113,6 +115,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       interface Comment {
         id: number;
         userId: number;
+
       }
       const route = useRoute();
       const store = useStore();
@@ -127,7 +130,7 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       defaultSelectedKeys.value = [];
       //评论
       const commentValue = ref();
-      //提交评论所需要的
+      //提交评论所需要的loading
       const submitting = ref(false);
       // 当前选中的文档
       const doc = ref();
@@ -145,12 +148,6 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         // 切换指定评论的回复表单的可见状态
         showReplyForm.value[index] = !showReplyForm.value[index];
       };
-      //将日期格式化
-      const formatDate = (dateString: Date) =>{
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-        const date = new Date(dateString);
-        return date.toLocaleString(undefined, options);
-      }
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
       };
@@ -298,7 +295,6 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
         username,
         doc,
         vote,
-        formatDate,
         ebookId,
         visible,
         afterVisibleChange,

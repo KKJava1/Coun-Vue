@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -48,6 +49,7 @@ public class CommentService {
     public List<CommentResp> selectByEbookId(Long ebookId) {
         List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
         List<CommentResp> processedComments = new ArrayList<>();
+
         // 将主评论添加到processedComments数组中
         for (CommentResp comment : rawComments) {
             User user = userMapper.selectByPrimaryKey(comment.getUserId());
@@ -61,6 +63,7 @@ public class CommentService {
                 comment.setReplies(new ArrayList<>()); // 添加空的replies数组
                 processedComments.add(comment); // 添加到处理后的评论数组
             }
+
         }
         // 将回复评论添加到对应的主评论的replies数组中
         for (CommentResp reply : rawComments) {
@@ -73,6 +76,7 @@ public class CommentService {
                 }
             }
         }
+
         return processedComments;
     }
 

@@ -1,5 +1,6 @@
 package com.jiawa.wiki.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jiawa.wiki.domain.Comment;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class CommentResp {
     private String replyname;
 
     private String content;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private List<CommentResp> replies = new ArrayList<>();
@@ -34,6 +35,7 @@ public class CommentResp {
         this.replies = replies;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     public Long getId() {
