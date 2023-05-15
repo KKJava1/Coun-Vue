@@ -92,8 +92,6 @@
               </a-list-item>
             </template>
           </a-list>
-
-
         </a-drawer>
       </a-row>
     </a-layout-content>
@@ -110,7 +108,6 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
   export default defineComponent({
     name: 'Doc',
     setup() {
-
       // 添加一个用于存储评论的引用
       const comments = ref<Comment[]>([]); // Comment 是一个有 id 和 userId 属性的接口
       interface Comment {
@@ -157,6 +154,16 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
       };
+      // 创建一个方法来获取评论
+      const fetchComments = () => {
+        axios.get('/doc/comments/' + ebookId).then(response => {
+          const fetchedComments = response.data.content;
+          commentCount.value = fetchedComments.length;
+          comments.value = fetchedComments;
+          console.log('评论列表', comments.value);
+        });
+      }
+
       //回复评论
       const submitReply = (index: number) => {
         if (!replyContent.value[index]) {  // 如果评论是空的
@@ -178,23 +185,10 @@ import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
             message.success("回复成功")
             // 提交回复后，隐藏回复输入框
             showReplyForm.value[index] = !showReplyForm.value[index]
+            fetchComments()
           }
         })
       }
-      // 创建一个方法来获取评论
-      const fetchComments = () => {
-        axios.get('/doc/comments/' + ebookId).then(response => {
-          console.log('评论jujujuju列表',response.data)
-          const fetchedComments = response.data.content;
-          commentCount.value = fetchedComments.length;
-          comments.value = fetchedComments;
-          console.log('评论列表', comments.value);
-        });
-      }
-
-
-
-
       //提交评论
       const handleSubmitComment = () => {
         if (!commentValue.value || !commentValue.value.trim()) {  // 如果评论是空的
