@@ -59,7 +59,7 @@
           <a-list :header="`${comments.length} 个评论`" item-layout="horizontal" :data-source="comments">
             <template #renderItem="{ item, index }">
               <a-list-item>
-                <CommentComponent :comment="item" @reply="handleReply(index)" />
+                <CommentComponent :comment="item" @reply="handleReply" />
               </a-list-item>
             </template>
           </a-list>
@@ -133,16 +133,9 @@ import CommentComponent from './assembly/commpent.vue';
       }
 
       //回复评论
-      const handleReply = (reply: { content: any;parentId: any;replytouserId: any}) => {
-        const commentReplyData = {
-          userId: store.state.user.id, // 从Vuex中获取userId
-          ebookId: route.query.ebookId,
-          content: reply.content,
-          parentId: reply.parentId,
-          replytouserId : reply.replytouserId
-        };
-
-        axios.post("/doc/handleReplyComment/", commentReplyData)
+      const handleReply = (reply: any) => {
+        console.log('回复',reply)
+        axios.post("/doc/handleReplyComment",reply)
             .then((response) => {
               const data = response.data
               if(data.success){

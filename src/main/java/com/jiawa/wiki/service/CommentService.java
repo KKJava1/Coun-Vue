@@ -87,13 +87,12 @@ public class CommentService {
     }
 
 
-
-
     //回复评论
     public CommentResp saveReply(CommentResp req) {
         if(req.getContent() == ""){
             throw new BusinessException(BusinessExceptionCode.Commit);
         }
+
         User user = userMapper.selectByPrimaryKey(req.getUserId());
         User replyuser = userMapper.selectByPrimaryKey(req.getReplytouserId());
         Date now = new Date();

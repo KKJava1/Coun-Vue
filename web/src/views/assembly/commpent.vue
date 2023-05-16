@@ -6,11 +6,10 @@
           {{ comment.content }}
         </p>
         <!-- 添加一个回复按钮 -->
-        <a-button @click="toggleReplyForm">回复</a-button>
-
+        <a-button type="link" @click="toggleReplyForm">回复</a-button>
         <!-- 添加一个回复表单 -->
-        <div v-if="showReplyForm.value">
-          <a-input v-model="replyContent.value" placeholder="请输入回复..."></a-input>
+        <div v-if="showReplyForm">
+          <a-input v-model:value="replyContent" placeholder="请输入回复..."></a-input>
           <a-button type="link" @click="submitReply">提交回复</a-button>
         </div>
 
@@ -26,6 +25,8 @@
 <script>
 import { ref } from 'vue';
 
+import {useStore} from "vuex";
+import {useRoute} from "vue-router";
 export default {
   name: 'CommentComponent',
   props: {
@@ -34,13 +35,16 @@ export default {
   setup(props, context) {
     const showReplyForm = ref(false);
     const replyContent = ref('');
-
+    const store = useStore();
+    const route = useRoute();
     const toggleReplyForm = () => {
       showReplyForm.value = !showReplyForm.value;
     };
 
     const submitReply = () => {
       context.emit('reply', {
+        userId: store.state.user.id, // 从Vuex中获取userId
+        ebookId: route.query.ebookId,
         content: replyContent.value,
         parentId: props.comment.id,
         replytouserId: props.comment.userId,
