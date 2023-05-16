@@ -135,6 +135,7 @@ import CommentComponent from './assembly/commpent.vue';
       //回复评论
       const handleReply = (reply: any) => {
         console.log('回复',reply)
+
         axios.post("/doc/handleReplyComment",reply)
             .then((response) => {
               const data = response.data
@@ -167,6 +168,7 @@ import CommentComponent from './assembly/commpent.vue';
               if (data.success) {
                 submitting.value = false;
                 message.success("评论成功");
+                commentValue.value = ''
                 fetchComments();  // 提交评论后刷新评论
               }
               else {

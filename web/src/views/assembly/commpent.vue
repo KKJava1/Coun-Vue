@@ -15,7 +15,7 @@
 
         <div v-for="(reply, replyIndex) in comment.replies" :key="replyIndex">
           <!-- 对每个子评论，递归地使用 CommentComponent -->
-          <CommentComponent :comment="reply" />
+          <CommentComponent :comment="reply" @reply="handleReply" />
         </div>
       </template>
     </a-comment>
@@ -40,6 +40,10 @@ export default {
     const toggleReplyForm = () => {
       showReplyForm.value = !showReplyForm.value;
     };
+    const handleReply = (reply) => {
+      // 处理 reply...
+      context.emit('reply', reply);
+    };
 
     const submitReply = () => {
       context.emit('reply', {
@@ -58,6 +62,7 @@ export default {
       replyContent,
       toggleReplyForm,
       submitReply,
+      handleReply
     };
   },
 };
