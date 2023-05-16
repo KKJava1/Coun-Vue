@@ -56,7 +56,7 @@
               </a-form-item>
             </template>
           </a-comment>
-          <a-list :header="`${comments.length} 个评论`" item-layout="horizontal" :data-source="comments">
+          <a-list  class="comment-list" :header="`${comments.length} 个评论`" item-layout="horizontal" :data-source="comments">
             <template #renderItem="{ item, index }">
               <a-list-item>
                 <CommentComponent :comment="item" @reply="handleReply" />

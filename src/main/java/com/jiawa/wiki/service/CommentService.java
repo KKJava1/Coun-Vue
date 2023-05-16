@@ -97,13 +97,11 @@ public class CommentService {
         Date now = new Date();
         //设置创建时间
         req.setCreateTime(now);
+        commentMapper.insertCommentResp(req);
         // 使用这个 ID 来查询并返回新插入的数据
         CommentResp commentResp = commentMapper.selectByCommentRespId(req.getId());
         commentResp.setName(user.getName());
         commentResp.setReplyname(replyuser.getName());
-        commentMapper.insertCommentResp(req);
-
-
         return commentResp;
     }
 
