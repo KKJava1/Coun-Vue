@@ -86,6 +86,7 @@
   import axios from 'axios';
   import { message } from 'ant-design-vue';
   import store from "@/store";
+  import {useRouter } from "vue-router";
 
   declare let hexMd5: any;
   declare let KEY: any;
@@ -93,6 +94,7 @@
   export default defineComponent({
     name: 'the-header',
     setup () {
+      const router = useRouter();
       // 登录后保存
       const user = computed(() => store.state.user);
       //用于注册
@@ -166,11 +168,13 @@
       // 退出登录
       const logout = () => {
         console.log("退出登录开始");
+
         axios.get('/user/logout/' + user.value.token).then((response) => {
           const data = response.data;
           if (data.success) {
             message.success("退出登录成功！");
             store.commit("setUser", {});
+            router.push('/');
           } else {
             message.error(data.message);
           }
