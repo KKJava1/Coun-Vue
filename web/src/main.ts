@@ -8,8 +8,6 @@ import * as Icons from '@ant-design/icons-vue';
 import axios from 'axios';
 import {Tool} from "@/util/tool";
 import { message } from 'ant-design-vue';
-import Vue from 'vue';
-import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 axios.defaults.baseURL = process.env.VUE_APP_SERVER;

@@ -9,7 +9,7 @@
         <a-button style="position: relative; top: -65px; margin-left: 150px" type="link" @click="toggleReplyForm">回复</a-button>
         <!-- 添加一个回复表单 -->
         <div v-if="showReplyForm">
-          <a-input v-model:value="replyContent" placeholder="请输入回复..."></a-input>
+          <a-input v-model:value="replyContent" :placeholder="replyname" style="position: relative; top: -20px;"></a-input>
           <a-button type="link" @click="submitReply">提交回复</a-button>
         </div>
 
@@ -37,8 +37,15 @@ export default {
     const replyContent = ref('');
     const store = useStore();
     const route = useRoute();
+    const replyname = ref('')
     const toggleReplyForm = () => {
       showReplyForm.value = !showReplyForm.value;
+      if(showReplyForm.value){
+        replyname.value=`回复：${props.comment.name}:`
+      }
+      else {
+        replyname.value = '请输入回复...';
+      }
     };
     const handleReply = (reply) => {
       // 处理 reply...
@@ -62,6 +69,7 @@ export default {
       replyContent,
       toggleReplyForm,
       submitReply,
+      replyname,
       handleReply
     };
   },

@@ -38,7 +38,7 @@
             title="评论"
             placement="right"
             width="700"
-            keyboard="true"
+            :keyboard="true"
             :closable="false"
             v-model:visible="visible"
             :after-visible-change="afterVisibleChange"
@@ -88,6 +88,7 @@ import CommentComponent from './assembly/commpent.vue';
       interface Comment {
         id: number;
         userId: number;
+        showReplyForm: boolean;
       }
       const route = useRoute();
       const store = useStore();
@@ -114,12 +115,7 @@ import CommentComponent from './assembly/commpent.vue';
       //添加显示回复的响应式
       const showReply = ref<boolean[]>([]);
       const replyContent = ref([]);
-      const showReplyForm = ref<boolean[]>([]);
 
-      const toggleReplyForm = (index: number) => {
-        // 切换指定评论的回复表单的可见状态
-        showReplyForm.value[index] = !showReplyForm.value[index];
-      };
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
       };
@@ -271,9 +267,7 @@ import CommentComponent from './assembly/commpent.vue';
         commentCount,
         showReply,
         replyContent,
-        showReplyForm,
         handleReply,
-        toggleReplyForm
       }
     }
   });
