@@ -25,6 +25,9 @@
           </div>
           <div class="wangeditor" :innerHTML="html"></div>
           <div class="vote-div">
+            <a-button style="margin-right: 12px" type="primary" shape="round" :size="'large'" @click="favorite">
+              <template #icon><StarOutlined /> &nbsp;收藏 </template>
+            </a-button>
             <a-button style="margin-right: 10px" type="primary" shape="round" :size="'large'"  @click="showDrawer">
               <template #icon><BarsOutlined />&nbsp;评论：{{commentCount}} </template>
             </a-button>
