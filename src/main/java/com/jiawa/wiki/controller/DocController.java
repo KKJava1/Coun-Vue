@@ -1,6 +1,7 @@
 package com.jiawa.wiki.controller;
 
 import com.jiawa.wiki.domain.Comment;
+import com.jiawa.wiki.domain.UserBooks;
 import com.jiawa.wiki.req.DocQueryReq;
 import com.jiawa.wiki.req.DocSaveReq;
 import com.jiawa.wiki.resp.CommentResp;
@@ -9,6 +10,7 @@ import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.service.CommentService;
 import com.jiawa.wiki.service.DocService;
+import com.jiawa.wiki.service.UserBookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,7 +28,8 @@ public class DocController {
     @Resource
     private CommentService commentService;
 
-
+    @Resource
+    private UserBookService userBookService;
     //提交评论
     @PostMapping("/handleSubmitComment")
     public CommonResp handleSubmitComment(@Valid @RequestBody Comment req) {
@@ -43,6 +46,17 @@ public class DocController {
         resp.setContent(commentResp);
         return resp;
     }
+
+    //收藏书本
+    @PostMapping("/collect")
+    public CommonResp collect(@Valid @RequestBody UserBooks req) {
+        CommonResp resp = new CommonResp<>();
+        int collectStatus  = userBookService.collectBook(req);
+        resp.setContent(collectStatus);
+        return resp;
+    }
+
+
     @GetMapping("/comments/{ebookId}")
     public CommonResp CommentResp(@PathVariable Long ebookId) {
         CommonResp<List<CommentResp>> resp = new CommonResp<>();

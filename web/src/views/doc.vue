@@ -26,7 +26,10 @@
           <div class="wangeditor" :innerHTML="html"></div>
           <div class="vote-div">
             <a-button style="margin-right: 12px" type="primary" shape="round" :size="'large'" @click="favorite">
-              <template #icon><StarOutlined /> &nbsp;收藏 </template>
+              <template #icon>
+                <a-rate style="margin-right: 2px" :value="favoriteStatus" :count="1" disabled/>
+              </template>
+              {{ favoriteStatus ? '取消收藏' : '收藏' }}
             </a-button>
             <a-button style="margin-right: 10px" type="primary" shape="round" :size="'large'"  @click="showDrawer">
               <template #icon><BarsOutlined />&nbsp;评论：{{commentCount}} </template>
@@ -75,7 +78,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref, createVNode, computed} from 'vue';
   import axios from 'axios';
-  import {message} from 'ant-design-vue';
+import {message, notification} from 'ant-design-vue';  // 引入notification
   import {Tool} from "@/util/tool";
   import {useRoute} from "vue-router";
   import {useStore} from 'vuex';
@@ -101,7 +104,7 @@ import CommentComponent from './assembly/commpent.vue';
       //评论数量
       const commentCount = ref(0);
       //通过传递过来拿到ebookId
-      const ebookId =route.query.ebookId;
+      const ebookId = route.query.ebookId;
       const defaultSelectedKeys = ref();
       defaultSelectedKeys.value = [];
       //评论
@@ -118,6 +121,7 @@ import CommentComponent from './assembly/commpent.vue';
       //添加显示回复的响应式
       const showReply = ref<boolean[]>([]);
       const replyContent = ref([]);
+      const favoriteStatus = ref(0); // 0 表示未选中，1 表示已选中
 
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
@@ -130,149 +134,171 @@ import CommentComponent from './assembly/commpent.vue';
           comments.value = fetchedComments;
         });
       }
-
-      //回复评论
-      const handleReply = (reply: any) => {
-        console.log('回复',reply)
-
-        axios.post("/doc/handleReplyComment",reply)
-            .then((response) => {
-              const data = response.data
-              if(data.success){
-                message.success("回复成功")
-                fetchComments()
+      //收藏书本
+      const favorite = () => {
+          // 已收藏，发送取消收藏的请求
+          axios.post('/doc/collect',{ userId: store.state.user.id, ebookId: route.query.ebookId})
+              .then(response => {
+            const data = response.data;
+            if (data.success) {
+              favoriteStatus.value = data.content; // 更新收藏状态为未收藏
+              if (favoriteStatus.value == 1) {
+                notification.success({
+                  message: '操作成功',
+                  description: '你已成功收藏此文档！'
+                });
+              } else {
+                notification.success({
+                  message: '操作成功',
+                  description: '你已成功取消收藏此文档！'
+                });
               }
-            })
-            .catch((error) => {
-              message.error("回复失败，原因：" + error.message);
-            });
-      };
-      //提交评论
-      const handleSubmitComment = () => {
-        if (!commentValue.value || !commentValue.value.trim()) {  // 如果评论是空的
-          message.error("评论为空，无法提交，请重新输入");
-          return;
-        }
-        //loading界面加载
-        submitting.value = true;
-        const commentData = {
-          userId: store.state.user.id, // 从Vuex中获取userId
-          ebookId: route.query.ebookId,
-          content: commentValue.value
+            }
+          })
+      }
+        //回复评论
+        const handleReply = (reply: any) => {
+          console.log('回复', reply)
+          axios.post("/doc/handleReplyComment", reply)
+              .then((response) => {
+                const data = response.data
+                if (data.success) {
+                  message.success("回复成功")
+                  fetchComments()
+                }
+              })
+              .catch((error) => {
+                message.error("回复失败，原因：" + error.message);
+              });
+        };
+        //提交评论
+        const handleSubmitComment = () => {
+          if (!commentValue.value || !commentValue.value.trim()) {  // 如果评论是空的
+            message.error("评论为空，无法提交，请重新输入");
+            return;
+          }
+          //loading界面加载
+          submitting.value = true;
+          const commentData = {
+            userId: store.state.user.id, // 从Vuex中获取userId
+            ebookId: route.query.ebookId,
+            content: commentValue.value
+          };
+
+          axios.post("/doc/handleSubmitComment/", commentData)
+              .then((response) => {
+                const data = response.data;
+                if (data.success) {
+                  submitting.value = false;
+                  message.success("评论成功");
+                  commentValue.value = ''
+                  fetchComments();  // 提交评论后刷新评论
+                } else {
+                  submitting.value = false;
+                  message.error(data.message);
+                }
+              })
+              .catch((error) => {
+                submitting.value = false;
+                message.error("提交评论失败，原因：" + error.message);
+              });
         };
 
-        axios.post("/doc/handleSubmitComment/", commentData)
-            .then((response) => {
-              const data = response.data;
-              if (data.success) {
-                submitting.value = false;
-                message.success("评论成功");
-                commentValue.value = ''
-                fetchComments();  // 提交评论后刷新评论
-              }
-              else {
-                submitting.value = false;
-                message.error(data.message);
-              }
-            })
-            .catch((error) => {
-              submitting.value = false;
-              message.error("提交评论失败，原因：" + error.message);
-            });
-      };
-
-      const showDrawer = () => {
-        visible.value = true;
-        //使用懒加载的方案减低性能损耗
-        fetchComments();  // 打开评论按钮时获取评论
-      };
-      /**
-       * 内容查询
-       **/
-      const handleQueryContent = (id: number) => {
-        axios.get("/doc/find-content/" + id).then((response) => {
-          const data = response.data;
-          if (data.success) {
-            html.value = data.content;
-          } else {
-            message.error(data.message);
-          }
-        });
-      };
-
-      /**
-       * 数据查询
-       **/
-      const handleQuery = () => {
-        axios.get("/doc/all/" + ebookId).then((response) => {
-          const data = response.data;
-          if (data.success) {
-            docs.value = data.content;
-            level1.value = [];
-            level1.value = Tool.array2Tree(docs.value, 0);
-            if (Tool.isNotEmpty(level1)) {
-              defaultSelectedKeys.value = [level1.value[0].id];
-              handleQueryContent(level1.value[0].id);
-              // 初始显示文档信息
-              doc.value = level1.value[0];
+        const showDrawer = () => {
+          visible.value = true;
+          //使用懒加载的方案减低性能损耗
+          fetchComments();  // 打开评论按钮时获取评论
+        };
+        /**
+         * 内容查询
+         **/
+        const handleQueryContent = (id: number) => {
+          axios.get("/doc/find-content/" + id).then((response) => {
+            const data = response.data;
+            if (data.success) {
+              html.value = data.content;
+            } else {
+              message.error(data.message);
             }
-          } else {
-            message.error(data.message);
-          }
-        });
-      };
+          });
+        };
 
-      const onSelect = (selectedKeys: any, info: any) => {
-        console.log('selected', selectedKeys, info);
-        if (Tool.isNotEmpty(selectedKeys)) {
-          // 选中某一节点时，加载该节点的文档信息
-          doc.value = info.selectedNodes[0].props;
-          // 加载内容
-          handleQueryContent(selectedKeys[0]);
+        /**
+         * 数据查询
+         **/
+        const handleQuery = () => {
+          axios.get("/doc/all/" + ebookId).then((response) => {
+            const data = response.data;
+            if (data.success) {
+              docs.value = data.content;
+              level1.value = [];
+              level1.value = Tool.array2Tree(docs.value, 0);
+              if (Tool.isNotEmpty(level1)) {
+                defaultSelectedKeys.value = [level1.value[0].id];
+                handleQueryContent(level1.value[0].id);
+                // 初始显示文档信息
+                doc.value = level1.value[0];
+              }
+            } else {
+              message.error(data.message);
+            }
+          });
+        };
+
+        const onSelect = (selectedKeys: any, info: any) => {
+          console.log('selected', selectedKeys, info);
+          if (Tool.isNotEmpty(selectedKeys)) {
+            // 选中某一节点时，加载该节点的文档信息
+            doc.value = info.selectedNodes[0].props;
+            // 加载内容
+            handleQueryContent(selectedKeys[0]);
+          }
+        };
+
+        // 点赞
+        const vote = () => {
+          axios.get('/doc/vote/' + doc.value.id).then((response) => {
+            const data = response.data;
+            if (data.success) {
+              doc.value.voteCount++;
+            } else {
+              message.error(data.message);
+            }
+          });
+        };
+
+        onMounted(() => {
+          handleQuery();
+          fetchComments();
+        });
+
+        return {
+          level1,
+          html,
+          onSelect,
+          CommentComponent,
+          defaultSelectedKeys,
+          username,
+          doc,
+          vote,
+          ebookId,
+          visible,
+          afterVisibleChange,
+          showDrawer,
+          commentValue,
+          submitting,
+          handleSubmitComment,
+          comments,
+          fetchComments,
+          commentCount,
+          showReply,
+          replyContent,
+          handleReply,
+          favorite,
+          favoriteStatus
         }
-      };
-
-      // 点赞
-      const vote = () => {
-        axios.get('/doc/vote/' + doc.value.id).then((response) => {
-          const data = response.data;
-          if (data.success) {
-            doc.value.voteCount++;
-          } else {
-            message.error(data.message);
-          }
-        });
-      };
-
-      onMounted(() => {
-        handleQuery();
-        fetchComments();
-      });
-
-      return {
-        level1,
-        html,
-        onSelect,
-        CommentComponent,
-        defaultSelectedKeys,
-        username,
-        doc,
-        vote,
-        ebookId,
-        visible,
-        afterVisibleChange,
-        showDrawer,
-        commentValue,
-        submitting,
-        handleSubmitComment,
-        comments,
-        fetchComments,
-        commentCount,
-        showReply,
-        replyContent,
-        handleReply,
       }
-    }
+
   });
 </script>
 

@@ -32,7 +32,8 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/file/**",
                         "/user/regirster",
                         "/doc/handleSubmitComment",
-                        "/doc/comments/{ebookId}"
+                        "/doc/comments/{ebookId}",
+                        "/doc/collect"
                 );
 
     }
