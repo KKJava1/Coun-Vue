@@ -41,25 +41,15 @@
       </a>
     </a-menu>
 
-    <a-modal
+    <form-register
         title="注册"
-        :visible="registerModalVisible"
+        v-model:visible="registerModalVisible"
         :confirm-loading="RegirsterModalVisible"
+        :user-data="RegirsterUser"
         @cancel="closeModal"
         @ok="register"
     >
-      <a-form :model="RegirsterUser" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-        <a-form-item label="登录名">
-          <a-input v-model:value="RegirsterUser.loginName" />
-        </a-form-item>
-        <a-form-item label="密码">
-          <a-input v-model:value="RegirsterUser.password" type="password" />
-        </a-form-item>
-        <a-form-item label="昵称">
-          <a-input v-model:value="RegirsterUser.name" />
-        </a-form-item>
-      </a-form>
-    </a-modal>
+    </form-register>
 
     <a-modal
       title="登录"
@@ -87,12 +77,14 @@
   import { message } from 'ant-design-vue';
   import store from "@/store";
   import {useRouter } from "vue-router";
+  import FormRegister from "@/views/assembly/FormRegister.vue";
 
   declare let hexMd5: any;
   declare let KEY: any;
 
   export default defineComponent({
     name: 'the-header',
+    components: {FormRegister},
     setup () {
       const router = useRouter();
       // 登录后保存
@@ -112,6 +104,7 @@
       const loginModalVisible = ref(false);
       //注册界面
       const registerModalVisible = ref(false);
+
       const loginModalLoading = ref(false);
       //注册加载
       const RegirsterModalVisible = ref(false);
@@ -131,13 +124,21 @@
       const register = () =>{
         console.log("注册");
         RegirsterModalVisible.value = true;
-        RegirsterUser.value.password = hexMd5(RegirsterUser.value.password + KEY);
-        axios.post('/user/regirster',RegirsterUser.value).then((response) =>{
+
+        // 创建一个新的对象来提交表单，而不是修改RegirsterUser.value,防止将加密后的密码暴露出来
+        const submitUser = {
+          loginName: RegirsterUser.value.loginName,
+          password: hexMd5(RegirsterUser.value.password + KEY),
+          name: RegirsterUser.value.name
+        };
+        axios.post('/user/regirster',submitUser).then((response) =>{
           console.log(response)
           RegirsterModalVisible.value = false;
           const data = response.data;
           if(data.success) {
             registerModalVisible.value = false;
+            // 清空RegirsterUser数据
+            RegirsterUser.value = { loginName: "", password: "", name: "" };
             message.success("注册成功");
           }
           else{
@@ -157,7 +158,6 @@
           if (data.success) {
             loginModalVisible.value = false;
             message.success("登录成功！");
-
             store.commit("setUser", data.content);
           } else {
             message.error(data.message);

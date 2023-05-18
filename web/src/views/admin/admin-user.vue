@@ -53,24 +53,14 @@
     </a-layout-content>
   </a-layout>
 
-  <a-modal
+  <form-register
     title="用户表单"
     v-model:visible="modalVisible"
     :confirm-loading="modalLoading"
+    :user-data="user"
     @ok="handleModalOk"
   >
-    <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-      <a-form-item label="登陆名">
-        <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
-      </a-form-item>
-      <a-form-item label="昵称">
-        <a-input v-model:value="user.name" />
-      </a-form-item>
-      <a-form-item label="密码" v-show="!user.id">
-        <a-input v-model:value="user.password"/>
-      </a-form-item>
-    </a-form>
-  </a-modal>
+  </form-register>
 
   <a-modal
     title="重置密码"
@@ -91,12 +81,14 @@
   import axios from 'axios';
   import { message } from 'ant-design-vue';
   import {Tool} from "@/util/tool";
+  import FormRegister from "@/views/assembly/FormRegister.vue";
 
   declare let hexMd5: any;
   declare let KEY: any;
 
   export default defineComponent({
     name: 'AdminUser',
+    components: {FormRegister},
     setup() {
       const param = ref();
       param.value = {};
@@ -173,7 +165,6 @@
       const modalLoading = ref(false);
       const handleModalOk = () => {
         modalLoading.value = true;
-
         user.value.password = hexMd5(user.value.password + KEY);
 
         axios.post("/user/save", user.value).then((response) => {

@@ -18,7 +18,6 @@ import com.jiawa.wiki.util.CopyUtil;
 import com.jiawa.wiki.util.RedisUtil;
 import com.jiawa.wiki.util.RequestContext;
 import com.jiawa.wiki.util.SnowFlake;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -79,16 +78,6 @@ public class DocService {
         LOG.info("总行数：{}", pageInfo.getTotal());
         LOG.info("总页数：{}", pageInfo.getPages());
 
-        // List<DocResp> respList = new ArrayList<>();
-        // for (Doc doc : docList) {
-        //     // DocResp docResp = new DocResp();
-        //     // BeanUtils.copyProperties(doc, docResp);
-        //     // 对象复制
-        //     DocResp docResp = CopyUtil.copy(doc, DocResp.class);
-        //
-        //     respList.add(docResp);
-        // }
-
         // 列表复制
         List<DocQueryResp> list = CopyUtil.copyList(docList, DocQueryResp.class);
 
@@ -112,7 +101,6 @@ public class DocService {
             doc.setViewCount(0);
             doc.setVoteCount(0);
             docMapper.insert(doc);
-
             content.setId(doc.getId());
             contentMapper.insert(content);
         } else {
