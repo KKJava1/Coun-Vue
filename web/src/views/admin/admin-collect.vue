@@ -4,7 +4,7 @@
         v-for="(book, index) in fetchedCollects"
         :key="index"
         hoverable
-        style="width: 300px; margin-right: 20px;"
+        style="width: 300px; margin-right: 20px; background-color: white;"
         @click="handleCollect(book.id)"
     >
       <template #cover>
@@ -13,11 +13,11 @@
             :src="book.cover"
         />
       </template>
-      <template #actions>
-        <setting-outlined key="setting" />
-        <edit-outlined key="edit" />
-        <ellipsis-outlined key="ellipsis" />
-      </template>
+<!--      <template #actions>-->
+<!--        <setting-outlined key="setting" />-->
+<!--        <edit-outlined key="edit" />-->
+<!--        <ellipsis-outlined key="ellipsis" />-->
+<!--      </template>-->
       <a-card-meta
           style="margin-top: 5px"
           :title="book.name"
@@ -37,7 +37,7 @@ import { SettingOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/ico
 import { useStore } from 'vuex';
 import { onMounted, ref } from "vue";
 import axios from "axios";
-
+import {useRoute, useRouter} from "vue-router";
 export default {
   name: "AdminCollect",
   components: {
@@ -49,7 +49,7 @@ export default {
     const store = useStore();
     const userId = store.state.user.id;
     const fetchedCollects = ref([]);
-
+    const router = useRouter();
     //查询该用户收藏的书本
     const fetchCollect = async () => {
       const response = await axios.get(`/user/collect/${userId}`);
@@ -58,14 +58,8 @@ export default {
     };
     //根据用户点击的书本到哪本电子书中
     const handleCollect = async (bookId: number) =>{
-      console.log("dsadas")
-      const response = await  axios.get(`/doc/all/${bookId}`);
-
+      router.push('/doc?ebookId='+bookId)
     }
-
-
-
-
 
     onMounted(fetchCollect);
     return {
