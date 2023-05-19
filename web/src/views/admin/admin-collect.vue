@@ -13,11 +13,26 @@
             :src="book.cover"
         />
       </template>
-<!--      <template #actions>-->
-<!--        <setting-outlined key="setting" />-->
-<!--        <edit-outlined key="edit" />-->
-<!--        <ellipsis-outlined key="ellipsis" />-->
-<!--      </template>-->
+      <template #actions>
+              <span @click.stop>
+                <a-tooltip title="章节数">
+                <component v-bind:is="'FileOutlined'" style="margin-right: 8px" />
+                {{ book.docCount }}
+                </a-tooltip>
+              </span>
+        <span>
+                <a-tooltip title="阅读数" @click.stop>
+                <component v-bind:is="'UserOutlined'" style="margin-right: 8px" />
+                {{ book.viewCount }}
+                </a-tooltip>
+              </span>
+        <span>
+                <a-tooltip title="点赞数" @click.stop>
+                <component v-bind:is="'LikeOutlined'" style="margin-right: 8px" />
+                {{ book.voteCount }}
+                  </a-tooltip>
+              </span>
+      </template>
       <a-card-meta
           style="margin-top: 5px"
           :title="book.name"
@@ -38,9 +53,11 @@ import { useStore } from 'vuex';
 import { onMounted, ref } from "vue";
 import axios from "axios";
 import {useRoute, useRouter} from "vue-router";
+import { Tooltip } from 'ant-design-vue';
 export default {
   name: "AdminCollect",
   components: {
+    Tooltip,
     SettingOutlined,
     EditOutlined,
     EllipsisOutlined,
@@ -74,17 +91,18 @@ export default {
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
+  justify-content: flex-start;  /* 修改这里 */
   align-items: stretch;
 }
 
 .card-container img {
-  height: 200px;  /* Adjust this value as needed */
-  object-fit: cover;  /* This makes sure the aspect ratio of the image is preserved */
+  height: 200px;
+  object-fit: cover;
 }
 .a-card-meta {
-  height: 100px; /* You can adjust the value according to your needs */
+  height: 100px;
   overflow: auto;
 }
+
 </style>
 

@@ -35,16 +35,22 @@
           <a-list-item key="item.name">
             <template #actions>
               <span>
+                <a-tooltip title="章节数">
                 <component v-bind:is="'FileOutlined'" style="margin-right: 8px" />
                 {{ item.docCount }}
+                </a-tooltip>
               </span>
               <span>
+                <a-tooltip title="阅读数">
                 <component v-bind:is="'UserOutlined'" style="margin-right: 8px" />
                 {{ item.viewCount }}
+                </a-tooltip>
               </span>
               <span>
+                <a-tooltip title="点赞数">
                 <component v-bind:is="'LikeOutlined'" style="margin-right: 8px" />
                 {{ item.voteCount }}
+                  </a-tooltip>
               </span>
             </template>
             <a-list-item-meta :description="item.description">
