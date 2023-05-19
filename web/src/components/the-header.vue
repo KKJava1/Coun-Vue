@@ -18,8 +18,9 @@
       <a-menu-item key="/admin/category" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/category">分类管理</router-link>
       </a-menu-item>
-
-
+      <a-menu-item key="/admin/collect" :style="user.id? {} : {display:'none'}">
+        <router-link to="/admin/collect">我的收藏</router-link>
+      </a-menu-item>
       <a-popconfirm
         title="确认退出登录?"
         ok-text="是"

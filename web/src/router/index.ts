@@ -6,6 +6,7 @@ import AdminEbook from '../views/admin/admin-ebook.vue'
 import AdminCategory from '../views/admin/admin-category.vue'
 import AdminDoc from '../views/admin/admin-doc.vue'
 import store from "@/store";
+import AdminCollect from '../views/admin/admin-collect.vue'
 import {Tool} from "@/util/tool";
 
 const routes: Array<RouteRecordRaw> = [
@@ -51,6 +52,14 @@ const routes: Array<RouteRecordRaw> = [
       loginRequire: true
     }
   },
+  {
+    path: '/admin/collect',
+    name: 'AdminCollect',
+    component: AdminCollect,
+    meta: {
+      loginRequire: true
+    }
+  }
 ]
 
 const router = createRouter({
