@@ -5,6 +5,7 @@
         :key="index"
         hoverable
         style="width: 300px; margin-right: 20px;"
+        @click="handleCollect(book.id)"
     >
       <template #cover>
         <img
@@ -49,16 +50,27 @@ export default {
     const userId = store.state.user.id;
     const fetchedCollects = ref([]);
 
+    //查询该用户收藏的书本
     const fetchCollect = async () => {
       const response = await axios.get(`/user/collect/${userId}`);
       fetchedCollects.value = response.data.content;
       console.log(fetchedCollects.value)
     };
+    //根据用户点击的书本到哪本电子书中
+    const handleCollect = async (bookId: number) =>{
+      console.log("dsadas")
+      const response = await  axios.get(`/doc/all/${bookId}`);
+
+    }
+
+
+
+
 
     onMounted(fetchCollect);
-
     return {
       fetchedCollects,
+      handleCollect
     };
   },
 }

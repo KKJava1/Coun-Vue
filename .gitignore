@@ -15,7 +15,9 @@ target/
 .apt_generated
 .idea/
 .log/
-
+*.idea/
+/*.log
+/*.idea
 .classpath
 .factorypath
 .project

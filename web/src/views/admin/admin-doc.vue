@@ -150,20 +150,8 @@
         }
       ];
 
-      /**
-       * 一级文档树，children属性就是二级文档
-       * [{
-       *   id: "",
-       *   name: "",
-       *   children: [{
-       *     id: "",
-       *     name: "",
-       *   }]
-       * }]
-       */
       const level1 = ref(); // 一级文档树，children属性就是二级文档
       level1.value = [];
-
       /**
        * 数据查询
        **/
