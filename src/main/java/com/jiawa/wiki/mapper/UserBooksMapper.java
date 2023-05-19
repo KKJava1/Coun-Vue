@@ -1,5 +1,6 @@
 package com.jiawa.wiki.mapper;
 
+import com.jiawa.wiki.domain.Ebook;
 import com.jiawa.wiki.domain.UserBooks;
 import com.jiawa.wiki.domain.UserBooksExample;
 import java.util.List;
@@ -27,4 +28,7 @@ public interface UserBooksMapper {
     int updateByPrimaryKeySelective(UserBooks record);
 
     int updateByPrimaryKey(UserBooks record);
+
+
+    List<Ebook> selectebooksByUserId(Long id);
 }

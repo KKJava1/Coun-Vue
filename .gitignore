@@ -14,7 +14,7 @@ target/
 ### STS ###
 .apt_generated
 .idea/
-log
+.log/
 
 .classpath
 .factorypath

@@ -1,7 +1,9 @@
 package com.jiawa.wiki.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jiawa.wiki.domain.Ebook;
 import com.jiawa.wiki.domain.User;
+import com.jiawa.wiki.domain.UserBooks;
 import com.jiawa.wiki.req.UserLoginReq;
 import com.jiawa.wiki.req.UserQueryReq;
 import com.jiawa.wiki.req.UserResetPasswordReq;
@@ -10,6 +12,7 @@ import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.resp.UserLoginResp;
 import com.jiawa.wiki.resp.UserQueryResp;
+import com.jiawa.wiki.service.UserBookService;
 import com.jiawa.wiki.service.UserService;
 import com.jiawa.wiki.util.SnowFlake;
 import org.slf4j.Logger;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -36,6 +40,15 @@ public class UserController {
 
     @Resource
     private RedisTemplate redisTemplate;
+    @Resource
+    private UserBookService userBookService;
+    @GetMapping("/collect/{id}")
+    public CommonResp collect(@Valid @PathVariable Long id) {
+        CommonResp resp = new CommonResp<>();
+        List<Ebook> list =userBookService.fetchCollect(id);
+        resp.setContent(list);
+        return resp;
+    }
 
     @GetMapping("/list")
     public CommonResp list(@Valid UserQueryReq req) {

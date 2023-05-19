@@ -82,7 +82,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from user_books
     where user_id = #{userId,jdbcType=BIGINT}
@@ -136,7 +136,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+    <select id="selectebooksByUserId" resultType="com.jiawa.wiki.domain.Ebook">
+      SELECT *
+      FROM ebook
+             INNER JOIN user_books  ON ebook.id = user_books.ebook_id
+      WHERE user_books.user_id = #{id};
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
     update user_books
     <set>
       <if test="record.userId != null">

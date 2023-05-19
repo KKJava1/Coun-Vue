@@ -53,4 +53,12 @@ public class UserBookService {
             return 1; // 返回1，表示当前书籍已被收藏
         }
     }
+
+    public List<Ebook>  fetchCollect(Long id) {
+        if(id ==null){
+            throw new BusinessException(BusinessExceptionCode.User_Ebook);
+        }
+        List<Ebook> ebooks =userBooksMapper.selectebooksByUserId(id);
+        return ebooks;
+    }
 }
