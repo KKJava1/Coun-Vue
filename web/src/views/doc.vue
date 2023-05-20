@@ -107,6 +107,8 @@ import CommentComponent from './assembly/commpent.vue';
       const ebookId = route.query.ebookId;
       const defaultSelectedKeys = ref();
       defaultSelectedKeys.value = [];
+      //选中节点
+      const selectDocId = ref<number>();
       //评论
       const commentValue = ref();
       //提交评论所需要的loading
@@ -245,15 +247,31 @@ import CommentComponent from './assembly/commpent.vue';
           });
         };
 
+        //保存用户的浏览文档记录
+        const saveDoc  = () => {
+          const DocComment = {
+            userId: store.state.user.id, // 从Vuex中获取userId
+            ebookId: route.query.ebookId,
+            docId: doc.value.id
+          }
+          axios.post("/doc/saveDocrecord",DocComment).then((response) =>{
+             const data = response.data
+            console.log('保存浏览记录成功',data)
+          })
+        }
         const onSelect = (selectedKeys: any, info: any) => {
-          console.log('selected', selectedKeys, info);
+          //接收用户选中的docId
+          selectDocId.value = Number(selectedKeys[0]);
+          console.log('选中的行数',selectDocId.value);
           if (Tool.isNotEmpty(selectedKeys)) {
             // 选中某一节点时，加载该节点的文档信息
             doc.value = info.selectedNodes[0].props;
             // 加载内容
             handleQueryContent(selectedKeys[0]);
+            saveDoc();
           }
         };
+
 
         // 点赞
         const vote = () => {
@@ -266,6 +284,7 @@ import CommentComponent from './assembly/commpent.vue';
             }
           });
         };
+
 
         onMounted(() => {
           handleQuery();
@@ -295,7 +314,9 @@ import CommentComponent from './assembly/commpent.vue';
           replyContent,
           handleReply,
           favorite,
-          favoriteStatus
+          favoriteStatus,
+          selectDocId,
+          saveDoc
         }
       }
 

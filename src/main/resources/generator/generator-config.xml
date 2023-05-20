@@ -48,6 +48,7 @@
         <!--<table tableName="user"/>-->
 <!--        <table tableName="ebook_snapshot"/>-->
 <!--        <table tableName="comment"/>-->
-        <table tableName="user_books"/>
+<!--        <table tableName="user_books"/>-->
+        <table tableName="read_progress"/>
     </context>
 </generatorConfiguration>

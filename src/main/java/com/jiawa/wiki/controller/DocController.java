@@ -1,6 +1,7 @@
 package com.jiawa.wiki.controller;
 
 import com.jiawa.wiki.domain.Comment;
+import com.jiawa.wiki.domain.ReadProgress;
 import com.jiawa.wiki.domain.UserBooks;
 import com.jiawa.wiki.req.DocQueryReq;
 import com.jiawa.wiki.req.DocSaveReq;
@@ -10,6 +11,7 @@ import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.service.CommentService;
 import com.jiawa.wiki.service.DocService;
+import com.jiawa.wiki.service.ReadProgressService;
 import com.jiawa.wiki.service.UserBookService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,16 @@ public class DocController {
 
     @Resource
     private UserBookService userBookService;
+
+    @Resource
+    private ReadProgressService readProgressService;
+
+    @PostMapping("/saveDocrecord")
+    public CommonResp<ReadProgress> saveDocrecord(@Valid @RequestBody ReadProgress req) {
+        return readProgressService.saveDocrecord(req);
+    }
+
+
     //提交评论
     @PostMapping("/handleSubmitComment")
     public CommonResp handleSubmitComment(@Valid @RequestBody Comment req) {
