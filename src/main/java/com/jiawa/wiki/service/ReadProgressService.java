@@ -34,4 +34,15 @@ public class ReadProgressService {
         }
         return resp;
     }
+
+
+    public CommonResp<ReadProgress> obrecord(Long userId, Long ebookId) {
+        CommonResp<ReadProgress> resp = new CommonResp<>();
+        if(userId == null){
+            throw  new BusinessException(BusinessExceptionCode.User_Ebook);
+        }
+        ReadProgress readProgress = readProgressMapper.selectDocrecord(userId,ebookId);
+        resp.setContent(readProgress);
+        return resp;
+    }
 }

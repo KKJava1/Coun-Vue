@@ -40,6 +40,10 @@ public class DocController {
     public CommonResp<ReadProgress> saveDocrecord(@Valid @RequestBody ReadProgress req) {
         return readProgressService.saveDocrecord(req);
     }
+    @GetMapping("/obrecord")
+    public CommonResp<ReadProgress> obrecord(@RequestParam Long userId, @RequestParam Long ebookId) {
+        return readProgressService.obrecord(userId,ebookId);
+    }
 
 
     //提交评论

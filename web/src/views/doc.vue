@@ -123,7 +123,7 @@ import CommentComponent from './assembly/commpent.vue';
       //添加显示回复的响应式
       const showReply = ref<boolean[]>([]);
       const replyContent = ref([]);
-      const favoriteStatus = ref(0); // 0 表示未选中，1 表示已选中
+      const favoriteStatus = computed(() => store.state.favoriteStatus);
 
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
@@ -136,29 +136,31 @@ import CommentComponent from './assembly/commpent.vue';
           comments.value = fetchedComments;
         });
       }
+
       //收藏书本
       const favorite = () => {
-          // 已收藏，发送取消收藏的请求
-          axios.post('/doc/collect',{ userId: store.state.user.id, ebookId: route.query.ebookId})
-              .then(response => {
-            const data = response.data;
-            if (data.success) {
-              favoriteStatus.value = data.content; // 更新收藏状态为未收藏
-              if (favoriteStatus.value == 1) {
-                notification.success({
-                  message: '操作成功',
-                  description: '你已成功收藏此文档！'
-                });
-              } else {
-                notification.success({
-                  message: '操作成功',
-                  description: '你已成功取消收藏此文档！'
-                });
+        // 已收藏，发送取消收藏的请求
+        axios.post('/doc/collect',{ userId: store.state.user.id, ebookId: route.query.ebookId})
+            .then(response => {
+              const data = response.data;
+              if (data.success) {
+                store.commit('setFavoriteStatus', data.content); // 调用 mutation
+                if (store.state.favoriteStatus == 1) {
+                  notification.success({
+                    message: '操作成功',
+                    description: '你已成功收藏此文档！'
+                  });
+                } else {
+                  notification.success({
+                    message: '操作成功',
+                    description: '你已成功取消收藏此文档！'
+                  });
+                }
               }
-            }
-          })
+            })
       }
-        //回复评论
+
+      //回复评论
         const handleReply = (reply: any) => {
           console.log('回复', reply)
           axios.post("/doc/handleReplyComment", reply)
@@ -186,7 +188,6 @@ import CommentComponent from './assembly/commpent.vue';
             ebookId: route.query.ebookId,
             content: commentValue.value
           };
-
           axios.post("/doc/handleSubmitComment/", commentData)
               .then((response) => {
                 const data = response.data;
@@ -236,10 +237,18 @@ import CommentComponent from './assembly/commpent.vue';
               level1.value = [];
               level1.value = Tool.array2Tree(docs.value, 0);
               if (Tool.isNotEmpty(level1)) {
-                defaultSelectedKeys.value = [level1.value[0].id];
-                handleQueryContent(level1.value[0].id);
-                // 初始显示文档信息
-                doc.value = level1.value[0];
+                // 在这里检查是否存在id等于selectDocId的文档
+                if (selectDocId.value && docs.value.some((doc: { id: number | undefined}) => doc.id === selectDocId.value)) {
+                  defaultSelectedKeys.value = [selectDocId.value];
+                  handleQueryContent(selectDocId.value);
+                  // 选中此文档
+                  doc.value = docs.value.find((doc: { id: number | undefined}) => doc.id === selectDocId.value);
+                } else {
+                  defaultSelectedKeys.value = [level1.value[0].id];
+                  handleQueryContent(level1.value[0].id);
+                  // 初始显示文档信息
+                  doc.value = level1.value[0];
+                }
               }
             } else {
               message.error(data.message);
@@ -247,7 +256,8 @@ import CommentComponent from './assembly/commpent.vue';
           });
         };
 
-        //保存用户的浏览文档记录
+
+      //保存用户的浏览文档记录
         const saveDoc  = () => {
           const DocComment = {
             userId: store.state.user.id, // 从Vuex中获取userId
@@ -259,18 +269,31 @@ import CommentComponent from './assembly/commpent.vue';
             console.log('保存浏览记录成功',data)
           })
         }
-        const onSelect = (selectedKeys: any, info: any) => {
-          //接收用户选中的docId
-          selectDocId.value = Number(selectedKeys[0]);
-          console.log('选中的行数',selectDocId.value);
-          if (Tool.isNotEmpty(selectedKeys)) {
+        const onSelect = (selectedKey: any, info: any) => {
+          if (Tool.isNotEmpty(selectedKey)) {
             // 选中某一节点时，加载该节点的文档信息
             doc.value = info.selectedNodes[0].props;
             // 加载内容
-            handleQueryContent(selectedKeys[0]);
+            handleQueryContent(selectedKey[0]);
             saveDoc();
           }
         };
+        //读取用户最终的浏览记录
+      const obrecord = () => {
+        axios.get('/doc/obrecord', {
+          params: {
+            userId: store.state.user.id,
+            ebookId: route.query.ebookId
+          }
+        }).then(response => {
+          const data = response.data;
+          console.log('返回上次的最终浏览界面',data)
+          if (data.success && data.content) {
+            selectDocId.value = data.content.docId;
+            handleQuery(); // 将obrecord中的handleQuery移到这里
+          }
+        });
+      }
 
 
         // 点赞
@@ -289,6 +312,7 @@ import CommentComponent from './assembly/commpent.vue';
         onMounted(() => {
           handleQuery();
           fetchComments();
+          obrecord();
         });
 
         return {
@@ -316,7 +340,8 @@ import CommentComponent from './assembly/commpent.vue';
           favorite,
           favoriteStatus,
           selectDocId,
-          saveDoc
+          saveDoc,
+          obrecord
         }
       }
 

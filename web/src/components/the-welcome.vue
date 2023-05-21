@@ -112,20 +112,34 @@
           const data = response.data;
           if (data.success) {
             const statisticResp = data.content;
-            statistic.value.viewCount = statisticResp[1].viewCount;
-            statistic.value.voteCount = statisticResp[1].voteCount;
-            statistic.value.todayViewCount = statisticResp[1].viewIncrease;
-            statistic.value.todayVoteCount = statisticResp[1].voteIncrease;
+            if (statisticResp && statisticResp.length > 1) {
+              if (typeof statisticResp[1].viewCount !== 'undefined' &&
+                  typeof statisticResp[1].voteCount !== 'undefined' &&
+                  typeof statisticResp[1].viewIncrease !== 'undefined' &&
+                  typeof statisticResp[1].voteIncrease !== 'undefined') {
+                statistic.value.viewCount = statisticResp[1].viewCount;
+                statistic.value.voteCount = statisticResp[1].voteCount;
+                statistic.value.todayViewCount = statisticResp[1].viewIncrease;
+                statistic.value.todayVoteCount = statisticResp[1].voteIncrease;
 
-            // 按分钟计算当前时间点，占一天的百分比
-            const now = new Date();
-            const nowRate = (now.getHours() * 60 + now.getMinutes()) / (60 * 24);
-            statistic.value.todayViewIncrease = parseInt(String(statisticResp[1].viewIncrease / nowRate));
-            statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - statisticResp[0].viewIncrease) / statisticResp[0].viewIncrease * 100;
-            statistic.value.todayViewIncreaseRateAbs = Math.abs(statistic.value.todayViewIncreaseRate);
+                // 按分钟计算当前时间点，占一天的百分比
+                const now = new Date();
+                const nowRate = (now.getHours() * 60 + now.getMinutes()) / (60 * 24);
+                statistic.value.todayViewIncrease = parseInt(String(statisticResp[1].viewIncrease / nowRate));
+                statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - statisticResp[0].viewIncrease) / statisticResp[0].viewIncrease * 100;
+                statistic.value.todayViewIncreaseRateAbs = Math.abs(statistic.value.todayViewIncreaseRate);
+              }else {
+                console.log('Invalid statisticResp[1] structure: ', statisticResp[1]);
+              }
+            } else {
+              console.log('Invalid statisticResp: ', statisticResp);
+            }
           }
+        }).catch((error) => {
+          console.log('Error while fetching statistics: ', error);
         });
-      };
+      }
+
 
       const init30DayEcharts = (list: any) => {
         const mainDom = document.getElementById('main-col');
