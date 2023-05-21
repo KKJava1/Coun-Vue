@@ -160,7 +160,7 @@ import CommentComponent from './assembly/commpent.vue';
             })
       }
 
-      //回复评论
+        //回复评论
         const handleReply = (reply: any) => {
           console.log('回复', reply)
           axios.post("/doc/handleReplyComment", reply)
@@ -255,8 +255,6 @@ import CommentComponent from './assembly/commpent.vue';
             }
           });
         };
-
-
       //保存用户的浏览文档记录
         const saveDoc  = () => {
           const DocComment = {
@@ -275,7 +273,9 @@ import CommentComponent from './assembly/commpent.vue';
           doc.value = info.selectedNodes[0].props;
           // 加载内容
           handleQueryContent(selectedKey[0]);
-          saveDoc();
+          if (store.state.user.id !=null) {
+            saveDoc();
+          }
           // 更新选中的节点
           defaultSelectedKeys.value = selectedKey;
         }
@@ -283,6 +283,9 @@ import CommentComponent from './assembly/commpent.vue';
 
       //读取用户最终的浏览记录
       const obrecord = () => {
+        if (!store.state.user.id) {
+          return; // 用户没有userId，直接返回，不执行后续代码
+        }
         axios.get('/doc/obrecord', {
           params: {
             userId: store.state.user.id,
@@ -316,7 +319,10 @@ import CommentComponent from './assembly/commpent.vue';
         onMounted(() => {
           handleQuery();
           fetchComments();
-          obrecord();
+          //检查用户是否存在
+          if (store.state.user.id) {
+            obrecord();
+          }
         });
 
         return {
