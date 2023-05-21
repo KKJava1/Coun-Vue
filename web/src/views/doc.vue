@@ -10,7 +10,7 @@
             @select="onSelect"
             :replaceFields="{title: 'name', key: 'id', value: 'id'}"
             :defaultExpandAll="true"
-            :defaultSelectedKeys="defaultSelectedKeys"
+            :selectedKeys="defaultSelectedKeys"
           >
           </a-tree>
         </a-col>
@@ -269,16 +269,19 @@ import CommentComponent from './assembly/commpent.vue';
             console.log('保存浏览记录成功',data)
           })
         }
-        const onSelect = (selectedKey: any, info: any) => {
-          if (Tool.isNotEmpty(selectedKey)) {
-            // 选中某一节点时，加载该节点的文档信息
-            doc.value = info.selectedNodes[0].props;
-            // 加载内容
-            handleQueryContent(selectedKey[0]);
-            saveDoc();
-          }
-        };
-        //读取用户最终的浏览记录
+      const onSelect = (selectedKey: any, info: any) => {
+        if (Tool.isNotEmpty(selectedKey)) {
+          // 选中某一节点时，加载该节点的文档信息
+          doc.value = info.selectedNodes[0].props;
+          // 加载内容
+          handleQueryContent(selectedKey[0]);
+          saveDoc();
+          // 更新选中的节点
+          defaultSelectedKeys.value = selectedKey;
+        }
+      };
+
+      //读取用户最终的浏览记录
       const obrecord = () => {
         axios.get('/doc/obrecord', {
           params: {
@@ -291,6 +294,7 @@ import CommentComponent from './assembly/commpent.vue';
           if (data.success && data.content) {
             selectDocId.value = data.content.docId;
             handleQuery(); // 将obrecord中的handleQuery移到这里
+            message.success("已返回上次的最终浏览界面")
           }
         });
       }

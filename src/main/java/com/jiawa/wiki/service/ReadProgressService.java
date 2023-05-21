@@ -18,9 +18,6 @@ public class ReadProgressService {
 
     public CommonResp<ReadProgress> saveDocrecord(ReadProgress req) {
         CommonResp<ReadProgress> resp = new CommonResp<>();
-        if(req.getUserId() == null){
-            throw  new BusinessException(BusinessExceptionCode.User_Ebook);
-        }
         ReadProgress readProgress = readProgressMapper.selectDocrecord(req.getUserId(), req.getEbookId());
         if(readProgress == null){
             readProgressMapper.insert(req);
@@ -38,9 +35,6 @@ public class ReadProgressService {
 
     public CommonResp<ReadProgress> obrecord(Long userId, Long ebookId) {
         CommonResp<ReadProgress> resp = new CommonResp<>();
-        if(userId == null){
-            throw  new BusinessException(BusinessExceptionCode.User_Ebook);
-        }
         ReadProgress readProgress = readProgressMapper.selectDocrecord(userId,ebookId);
         resp.setContent(readProgress);
         return resp;
