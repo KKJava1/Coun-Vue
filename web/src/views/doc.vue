@@ -124,6 +124,8 @@ import CommentComponent from './assembly/commpent.vue';
       const showReply = ref<boolean[]>([]);
       const replyContent = ref([]);
       const favoriteStatus = computed(() => store.state.favoriteStatus);
+      //定义时间用于节流
+      let timeoutId: number | undefined;
 
       const afterVisibleChange = (bool: boolean) => {
         console.log('visible', bool);
@@ -256,17 +258,23 @@ import CommentComponent from './assembly/commpent.vue';
           });
         };
       //保存用户的浏览文档记录
-        const saveDoc  = () => {
-          const DocComment = {
-            userId: store.state.user.id, // 从Vuex中获取userId
-            ebookId: route.query.ebookId,
-            docId: doc.value.id
-          }
-          axios.post("/doc/saveDocrecord",DocComment).then((response) =>{
-             const data = response.data
-            console.log('保存浏览记录成功',data)
-          })
+      const saveDoc  = () => {
+        const DocComment = {
+          userId: store.state.user.id, // 从Vuex中获取userId
+          ebookId: route.query.ebookId,
+          docId: doc.value.id
         }
+        axios.post("/doc/saveDocrecord",DocComment).then((response) =>{
+          const data = response.data
+          console.log('保存浏览记录成功',data)
+        })
+      }
+      //节流策略
+      const debonSaveDoc = () =>{
+        //如果有时间就做一个清理
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(saveDoc,3000);
+      }
       const onSelect = (selectedKey: any, info: any) => {
         if (Tool.isNotEmpty(selectedKey)) {
           // 选中某一节点时，加载该节点的文档信息
@@ -274,12 +282,13 @@ import CommentComponent from './assembly/commpent.vue';
           // 加载内容
           handleQueryContent(selectedKey[0]);
           if (store.state.user.id !=null) {
-            saveDoc();
+            debonSaveDoc();
           }
           // 更新选中的节点
           defaultSelectedKeys.value = selectedKey;
         }
       };
+
 
       //读取用户最终的浏览记录
       const obrecord = () => {
@@ -351,7 +360,9 @@ import CommentComponent from './assembly/commpent.vue';
           favoriteStatus,
           selectDocId,
           saveDoc,
-          obrecord
+          obrecord,
+          timeoutId,
+          debonSaveDoc
         }
       }
 
