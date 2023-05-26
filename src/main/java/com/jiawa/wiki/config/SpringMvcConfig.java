@@ -34,7 +34,8 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/doc/handleSubmitComment",
                         "/doc/comments/{ebookId}",
                         "/doc/collect",
-                        "/doc/saveDocrecord"
+                        "/doc/saveDocrecord",
+                        "/forum/**"
                 );
 
     }
