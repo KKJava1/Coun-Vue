@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/home.vue'
 import Doc from '../views/doc.vue'
+import AdminForum from '../views/admin/admin-forum.vue'
 import AdminUser from '../views/admin/admin-user.vue'
 import AdminEbook from '../views/admin/admin-ebook.vue'
 import AdminCategory from '../views/admin/admin-category.vue'
 import AdminDoc from '../views/admin/admin-doc.vue'
 import store from "@/store";
 import AdminCollect from '../views/admin/admin-collect.vue'
+
 import {Tool} from "@/util/tool";
 
 const routes: Array<RouteRecordRaw> = [
@@ -59,6 +61,14 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       loginRequire: true
     }
+  },
+  {
+    path: '/admin/forum',
+    name: 'AdminForum',
+    component: AdminForum,
+    meta: {
+      loginRequire: true
+    },
   }
 ]
 

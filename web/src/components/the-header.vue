@@ -21,6 +21,9 @@
       <a-menu-item key="/admin/collect" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/collect">我的收藏</router-link>
       </a-menu-item>
+      <a-menu-item key="/admin/forum" :style="user.id? {} : {display:'none'}">
+        <router-link to="/admin/forum">讨论版</router-link>
+      </a-menu-item>
       <a-popconfirm
         title="确认退出登录?"
         ok-text="是"
