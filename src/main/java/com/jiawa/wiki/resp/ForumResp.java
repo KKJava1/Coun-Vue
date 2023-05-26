@@ -19,6 +19,16 @@ public class ForumResp {
 
     private String UserName;
 
+    private String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public String getUserName() {
         return UserName;
     }

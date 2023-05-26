@@ -34,11 +34,38 @@
                   @click="release()">
                 发布
               </a-button>
-
             </a-col>
           </a-row>
         </a-card>
       </a-col>
+    </a-row>
+    <a-row :gutter="16" justify="center" style="margin-top: 20px">
+    <a-col :span="12">
+      <a-card title="card title" :bordered="false">
+        <a-button type="link">
+         推荐
+        </a-button>
+        <a-list item-layout="vertical" size="large" :data-source="listData">
+          <template #renderItem="{ item }">
+            <a-list-item key="item.title">
+              <template #actions>
+          <span v-for="{ type, text } in actions" :key="type">
+            <component v-bind:is="type" style="margin-right: 8px" />
+            {{ text }}
+          </span>
+              </template>
+              <a-list-item-meta :description="item.description">
+                <template #title>
+                  <a :href="item.href">{{ item.title }}</a>
+                </template>
+                <template #avatar><a-avatar :src="item.avatar" /></template>
+              </a-list-item-meta>
+              {{ item.content }}
+            </a-list-item>
+          </template>
+        </a-list>
+      </a-card>
+    </a-col>
     </a-row>
   </div>
 </template>
@@ -46,13 +73,16 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {message} from "ant-design-vue";
+import {message, notification} from "ant-design-vue";
 import store from "@/store";
 import axios from "axios";
 
 const title = ref('')
 const context = ref('')
 const iconLoading = ref(false)
+//初始化加载页面
+
+
 //发布
 const release = () =>{
   iconLoading.value = true
@@ -64,10 +94,21 @@ const release = () =>{
   console.log(releaseData)
   axios.post('/forum/save',releaseData).then((response) =>{
     const data = response.data;
-    console.log("数据为"+data)
-    iconLoading.value = false
+    if (data.success){
+      notification.success("发起讨论成功")
+      console.log("数据为"+data)
+      iconLoading.value = false
+    }
   })
 }
+
+
+
+
+
+
+
+
 
 </script>
 <style>
