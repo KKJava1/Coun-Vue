@@ -66,9 +66,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin/forum',
     name: 'AdminForum',
     component: AdminForum,
-    meta: {
-      loginRequire: true
-    },
   }
 ]
 

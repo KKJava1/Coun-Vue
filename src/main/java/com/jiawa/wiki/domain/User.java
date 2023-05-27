@@ -9,6 +9,8 @@ public class User {
 
     private String password;
 
+    private String avatar;
+
     public Long getId() {
         return id;
     }
@@ -41,6 +43,14 @@ public class User {
         this.password = password;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -51,6 +61,7 @@ public class User {
         sb.append(", loginName=").append(loginName);
         sb.append(", name=").append(name);
         sb.append(", password=").append(password);
+        sb.append(", avatar=").append(avatar);
         sb.append("]");
         return sb.toString();
     }

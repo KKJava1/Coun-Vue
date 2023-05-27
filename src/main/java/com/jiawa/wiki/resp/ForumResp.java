@@ -3,6 +3,7 @@ package com.jiawa.wiki.resp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.List;
 
 public class ForumResp {
     private Long id;
@@ -20,6 +21,8 @@ public class ForumResp {
     private String UserName;
 
     private String avatar;
+
+    private List<ForumResp> Forumlist;
 
     public String getAvatar() {
         return avatar;

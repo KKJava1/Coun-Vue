@@ -93,6 +93,7 @@ export default {
   flex-wrap: wrap;
   justify-content: flex-start;  /* 修改这里 */
   align-items: stretch;
+  background-color: white;
 }
 
 .card-container img {
@@ -103,6 +104,7 @@ export default {
   height: 100px;
   overflow: auto;
 }
+
 
 </style>
 

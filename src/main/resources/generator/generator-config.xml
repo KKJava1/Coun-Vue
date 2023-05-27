@@ -22,9 +22,11 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://106.14.183.201:3306/wiki?characterEncoding=UTF8"
+                        connectionURL="jdbc:mysql://localhost:3306/wiki?characterEncoding=UTF8"
                         userId="root"
                         password="kjj0427">
+            <property name="serverTimezone" value="UTC"/>
+            <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
 
         <!-- domain类的位置 -->
@@ -45,11 +47,11 @@
         <!--<table tableName="category"/>-->
         <!--<table tableName="doc"/>-->
         <!--<table tableName="content"/>-->
-        <!--<table tableName="user"/>-->
+        <table tableName="user"/>
 <!--        <table tableName="ebook_snapshot"/>-->
 <!--        <table tableName="comment"/>-->
 <!--        <table tableName="user_books"/>-->
 <!--        <table tableName="read_progress"/>     -->
-        <table tableName="forum"/>
+<!--        <table tableName="forum"/>-->
     </context>
 </generatorConfiguration>
