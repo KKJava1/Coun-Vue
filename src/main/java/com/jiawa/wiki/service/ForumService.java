@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ForumService {
@@ -42,19 +45,24 @@ public class ForumService {
 
     public PageResp<ForumResp> fetchForumList(ForumQueryReq req) {
         ForumExample forumExample =new ForumExample();
-        PageHelper.startPage(req.getPage(), req.getSize());
-
         List<Forum> forumList = forumMapper.selectByExample(forumExample);
-        PageInfo<Forum> pageInfo = new PageInfo<>(forumList);
-        List<ForumResp> forumRespList = CopyUtil.copyList(forumList, ForumResp.class);
-
-        //循环出来每一个数组
-        forumRespList.forEach(forumResp -> {
-            User user = userMapper.selectByPrimaryKey(forumResp.getUserId());
-            forumResp.setAvatar(user.getAvatar());
+        //返回一个所有的用户id已便进行后续查询
+        List<Long> UserIds = forumList.stream().map(Forum::getUserId).collect(Collectors.toList());
+        //查询到所有用户信息
+        Map<Long, User> userMap = userMapper.selectByIds(UserIds)
+                .stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+        //使用函数式编程将Forum类型转换为ForumResp类型
+        List<ForumResp> forumRespList = forumList.stream().map(forum -> {
+            ForumResp forumResp = CopyUtil.copy(forum, ForumResp.class);
+            User user = userMap.get(forum.getUserId());
             forumResp.setUserName(user.getName());
-        });
+            forumResp.setAvatar(user.getAvatar());
+            return forumResp;
+        }).collect(Collectors.toList());
 
+        PageHelper.startPage(req.getPage(), req.getSize());
+        PageInfo<Forum> pageInfo = new PageInfo<>(forumList);
         PageResp<ForumResp> pageResp = new PageResp();
         pageResp.setList(forumRespList);
         pageResp.setTotal(pageInfo.getTotal());

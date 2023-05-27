@@ -2,6 +2,8 @@ package com.jiawa.wiki.mapper;
 
 import com.jiawa.wiki.domain.User;
 import com.jiawa.wiki.domain.UserExample;
+
+import java.util.Collection;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,4 +29,7 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+
+    List<User> selectByIds(List<Long> userIds);
 }

@@ -148,6 +148,14 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="selectByIds"  parameterType="list" resultType="com.jiawa.wiki.domain.User">
+    select *
+    from user
+    where id IN 
+    <foreach collection="list" item="item"  open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
   <update id="updateByExampleSelective" parameterType="map">
     update user
     <set>
