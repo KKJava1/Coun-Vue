@@ -32,12 +32,15 @@ export default {
   props: {
     comment: Object,
   },
+
   setup(props, context) {
     const showReplyForm = ref(false);
     const replyContent = ref('');
     const store = useStore();
     const route = useRoute();
     const replyname = ref('')
+
+
     const toggleReplyForm = () => {
       showReplyForm.value = !showReplyForm.value;
       if(showReplyForm.value){

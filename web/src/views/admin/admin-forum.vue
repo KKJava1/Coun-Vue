@@ -43,25 +43,16 @@
     <a-row :gutter="16" justify="center" style="margin-top: 20px">
     <a-col :span="12">
       <a-card title="card title" :bordered="false">
-<!--        <a-button type="link">-->
-<!--         推荐-->
-<!--        </a-button>-->
         <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="forumData">
           <template #renderItem="{ item }">
             <a-list-item key="item.name">
-              <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component v-bind:is="type" style="margin-right: 8px" />
-            {{ text }}
-          </span>
-              </template>
               <a-list-item-meta :description="item.createTime">
                 <template #title>
                   <a>{{ item.userName }}</a>
                 </template>
                 <template #avatar><a-avatar :src="item.avatar" /></template>
               </a-list-item-meta>
-              <h1 style="margin-top: -10px">{{item.title}}</h1>
+              <h1 style="margin-top: -10px"><a>{{item.title}}</a></h1>
               {{ item.context }}
             </a-list-item>
           </template>

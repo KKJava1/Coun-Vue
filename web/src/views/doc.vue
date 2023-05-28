@@ -99,6 +99,7 @@ import CommentComponent from './assembly/commpent.vue';
       const route = useRoute();
       const store = useStore();
       const username = computed(() => store.state.user.name);
+
       const docs = ref();
       const html = ref();
       //评论数量
@@ -124,6 +125,8 @@ import CommentComponent from './assembly/commpent.vue';
       const showReply = ref<boolean[]>([]);
       const replyContent = ref([]);
       const favoriteStatus = computed(() => store.state.favoriteStatus);
+      //用于将回复名和回复人进行回显
+      const nameAndReplyname = ref('')
       //定义时间用于节流
       let timeoutId: number | undefined;
 

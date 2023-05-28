@@ -48,11 +48,13 @@ public class CommentService {
     }
 
     public List<CommentResp> selectByEbookId(Long ebookId) {
+        //根据ebookId查询到电子书下的评论
         List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
         // 创建一个映射，用于快速查找每个评论的所有直接回复
         Map<Long, List<CommentResp>> repliesMap = new HashMap<>();
         for (CommentResp comment : rawComments) {
             User user = userMapper.selectByPrimaryKey(comment.getUserId());
+
             comment.setName(user.getName());
             if (comment.getParentId() != null) {
                 repliesMap.computeIfAbsent(comment.getParentId(), k -> new ArrayList<>()).add(comment);
