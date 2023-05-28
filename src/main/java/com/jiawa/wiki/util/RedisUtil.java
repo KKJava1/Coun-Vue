@@ -38,5 +38,26 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 保存用户的浏览记录到Redis中
+     * @param userId
+     * @param docId
+     * @param expireTime 过期时间，单位为秒
+     */
+    public void saveUserLastReadDoc(Long userId, Long docId, long expireTime) {
+        String key = "user:" + userId + ":lastReadDoc";
+        redisTemplate.opsForValue().set(key, docId, expireTime, TimeUnit.SECONDS);
+        LOG.info("保存用户 {} 的浏览记录到Redis，docId：{}，过期时间：{}秒", userId, docId, expireTime);
+    }
+
+    /**
+     * 从Redis中获取用户的最后一次浏览记录
+     * @param userId
+     * @return 用户的最后一次浏览的docId，如果不存在，则返回null
+     */
+    public String getUserLastReadDoc(Long userId) {
+        String key = "user:" + userId + ":lastReadDoc";
+        return (String) redisTemplate.opsForValue().get(key);
+    }
 
 }

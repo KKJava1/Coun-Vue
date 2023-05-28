@@ -6,6 +6,7 @@ import com.jiawa.wiki.exception.BusinessExceptionCode;
 import com.jiawa.wiki.mapper.ReadProgressMapper;
 import com.jiawa.wiki.resp.CommentResp;
 import com.jiawa.wiki.resp.CommonResp;
+import com.jiawa.wiki.util.RedisUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,7 +16,8 @@ public class ReadProgressService {
     @Resource
     private ReadProgressMapper readProgressMapper;
 
-
+    @Resource
+    private RedisUtil redisUtil;
     public CommonResp<ReadProgress> saveDocrecord(ReadProgress req) {
         CommonResp<ReadProgress> resp = new CommonResp<>();
         ReadProgress readProgress = readProgressMapper.selectDocrecord(req.getUserId(), req.getEbookId());
@@ -29,6 +31,7 @@ public class ReadProgressService {
             readProgressMapper.updateByPrimaryKey(req);
             resp.setContent(readProgress); // 设置返回内容
         }
+        redisUtil.saveUserLastReadDoc(req.getUserId(), req.getDocId(),3600 * 24);
         return resp;
     }
 
@@ -36,7 +39,19 @@ public class ReadProgressService {
     public CommonResp<ReadProgress> obrecord(Long userId, Long ebookId) {
         CommonResp<ReadProgress> resp = new CommonResp<>();
         ReadProgress readProgress = readProgressMapper.selectDocrecord(userId,ebookId);
+
+        // 获取Redis中的记录
+        String lastReadDocIdStr = redisUtil.getUserLastReadDoc(userId);
+
+        // 如果Redis中有记录，更新readProgress的docId
+        if (lastReadDocIdStr != null) {
+            Long lastReadDocId = Long.parseLong(lastReadDocIdStr);
+            readProgress.setDocId(lastReadDocId);
+        }
+
         resp.setContent(readProgress);
         return resp;
     }
+
+
 }
