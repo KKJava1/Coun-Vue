@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,16 +51,24 @@ public class CommentService {
     public List<CommentResp> selectByEbookId(Long ebookId) {
         //根据ebookId查询到电子书下的评论
         List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
+        //循环所有的userIds将他组成一个集合进行一个批量查询
+        List<Long> userIds = rawComments.stream().map(CommentResp::getUserId).collect(Collectors.toList());
+        List<User> userList = userMapper.selectByIds(userIds);
+
+        //创建一个Map，用于后续的存储
+        Map<Long, User> UserMap = userList.stream().collect(Collectors.toMap(User::getId, Function.identity()));
+
         // 创建一个映射，用于快速查找每个评论的所有直接回复
         Map<Long, List<CommentResp>> repliesMap = new HashMap<>();
         for (CommentResp comment : rawComments) {
-            User user = userMapper.selectByPrimaryKey(comment.getUserId());
-
+            //根据键值对进行一个对应
+            User user = UserMap.get(comment.getUserId());
             comment.setName(user.getName());
+            comment.setAvatar(user.getAvatar());
             if (comment.getParentId() != null) {
                 repliesMap.computeIfAbsent(comment.getParentId(), k -> new ArrayList<>()).add(comment);
-                User replyuser = userMapper.selectByPrimaryKey(comment.getReplytouserId());
-                comment.setReplyname(replyuser.getName());
+                User replyUser = UserMap.get(comment.getReplytouserId());
+                comment.setReplyname(replyUser.getName());
             }
          }
         // 递归地添加每个评论的所有回复

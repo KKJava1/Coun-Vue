@@ -137,6 +137,7 @@ import CommentComponent from './assembly/commpent.vue';
       const fetchComments = () => {
         axios.get('/doc/comments/' + ebookId).then(response => {
           const fetchedComments = response.data.content;
+          console.log("fetchedCommentsfetchedCommentsfetchedComments",fetchedComments)
           commentCount.value = fetchedComments.length;
           comments.value = fetchedComments;
         });

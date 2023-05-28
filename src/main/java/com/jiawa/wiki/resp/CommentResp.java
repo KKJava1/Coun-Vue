@@ -28,6 +28,16 @@ public class CommentResp {
 
     private List<CommentResp> replies = new ArrayList<>();
 
+    private String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public List<CommentResp> getReplies() {
         return replies;
     }
@@ -130,6 +140,8 @@ public class CommentResp {
                 ", replyname='" + replyname + '\'' +
                 ", content='" + content + '\'' +
                 ", createTime=" + createTime +
+                ", replies=" + replies +
+                ", avatar='" + avatar + '\'' +
                 ", updateTime=" + updateTime +
                 '}';
     }

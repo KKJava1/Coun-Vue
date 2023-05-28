@@ -1,6 +1,11 @@
 <template>
   <div>
     <a-comment :author="comment.name" :datetime="comment.createTime">
+      <template #avatar>
+        <a-avatar
+            :src="comment.avatar"
+        />
+      </template>
       <template #content>
         <p>
           {{ comment.content }}
