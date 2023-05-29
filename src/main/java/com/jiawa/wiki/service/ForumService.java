@@ -15,6 +15,7 @@ import com.jiawa.wiki.resp.ForumResp;
 import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.resp.UserQueryResp;
 import com.jiawa.wiki.util.CopyUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -67,5 +68,19 @@ public class ForumService {
         pageResp.setList(forumRespList);
         pageResp.setTotal(pageInfo.getTotal());
         return pageResp;
+    }
+
+    public CommonResp forumcontent(Long id) {
+        CommonResp resp=new CommonResp();
+        if(id == null){
+            throw new BusinessException(BusinessExceptionCode.ForumContent);
+        }
+        Forum forum = forumMapper.selectByPrimaryKey(id);
+        ForumResp forumResp = CopyUtil.copy(forum, ForumResp.class);
+        User user = userMapper.selectByPrimaryKey(forumResp.getUserId());
+        forumResp.setUserName(user.getName());
+        forumResp.setAvatar(user.getAvatar());
+        resp.setContent(forumResp);
+        return resp;
     }
 }

@@ -6,6 +6,7 @@ import com.jiawa.wiki.req.DocQueryReq;
 import com.jiawa.wiki.req.ForumQueryReq;
 import com.jiawa.wiki.resp.*;
 import com.jiawa.wiki.service.ForumService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,6 +30,11 @@ public class ForumController {
         PageResp<ForumResp> forumRespList= forumService.fetchForumList(req);
         resp.setContent(forumRespList);
         return resp;
+    }
+
+    @GetMapping("/forumcontent/{id}")
+    public CommonResp forumcontent(@PathVariable Long id ){
+        return forumService.forumcontent(id);
     }
 
 }

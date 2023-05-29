@@ -52,30 +52,34 @@
                 </template>
                 <template #avatar><a-avatar :src="item.avatar" /></template>
               </a-list-item-meta>
-              <h1 style="margin-top: -10px"><a>{{item.title}}</a></h1>
+              <h1 style="margin-top: -10px"><a @click="openModal(item.id)">{{item.title}}</a></h1>
               {{ item.context }}
             </a-list-item>
           </template>
         </a-list>
       </a-card>
+      <forum-content :modelValue="modelValue" :forumDetails="selectedItem" @update:modelValue="modelValue = $event"></forum-content>
+
     </a-col>
     </a-row>
   </div>
 </template>
 
 <script setup lang="ts">
-
+import forumContent from '../assembly/forumContent.vue'
 import {onMounted, ref} from "vue";
 import {message, notification} from "ant-design-vue";
 import store from "@/store";
 import axios from "axios";
+import ForumContent from "@/views/assembly/forumContent.vue";
 //分页信息
 const pagination = ref({});
 const title = ref('')
 const context = ref('')
 const iconLoading = ref(false)
 const forumData = ref([]);
-
+const selectedItem = ref(null);
+const modelValue = ref(false)
 //初始化加载页面
 onMounted(()=>{
   fetchForumList({ page: 1, size: 10 });
@@ -121,6 +125,15 @@ const fetchForumList =(params: any) =>{
         fetchForumList({ page, size: pageSize });
       },
     }
+  })
+}
+
+const openModal = (id: number) =>{
+
+  axios.get('/forum/forumcontent/'+id).then((response) =>{
+    const data = response.data;
+    selectedItem.value = data.content;
+    modelValue.value = true
   })
 }
 </script>
