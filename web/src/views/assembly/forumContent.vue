@@ -2,10 +2,28 @@
   <div>
     <a-modal :visible="modelValue"
              width="1000px"
-             title="Basic Modal"
              wrapClassName="full-modal"
              @ok="handleOk"
              @cancel="handleCancel">
+      <template #title>
+        <a-list item-layout="vertical" size="large" :data-source="[forumDetails]">
+          <template #renderItem="{ item }">
+            <a-list-item key="item.name">
+              <a-affix>
+              <a-list-item-meta :description="item.createTime" class="">
+                <template #title>
+                  <a>{{ item.userName }}</a>
+                </template>
+                <template #avatar><a-avatar :src="item.avatar" /></template>
+              </a-list-item-meta>
+               </a-affix>
+              <h1 style="margin-top: -10px">{{item.title}}</h1>
+              {{ item.context }}
+            </a-list-item>
+          </template>
+        </a-list>
+
+      </template>
       <p>Some contents...</p>
       <p>Some contents...</p>
       <p>Some contents...</p>
@@ -23,27 +41,36 @@ const props = defineProps({
 const emit = defineEmit(['update:modelValue'])
 
 const showModal = () => {
+  document.body.style.overflow = 'hidden';
   emit('update:modelValue', true);
 };
 
 const handleCancel = () => {
+  document.body.style.overflow = '';
   emit('update:modelValue', false);
 };
 
-// handleOk can be similar to handleCancel
 const handleOk = () => {
+  document.body.style.overflow = '';
   emit('update:modelValue', false);
 };
+
 </script>
-<style>
-.full-modal .ant-modal {
-  height: 100vh;
+<style scoped>
+:deep(.ant-list-item-meta-description) {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+  line-height: 22px;
+  margin-top: -12px;
 }
-.full-modal .ant-modal-content {
-  height: 100%;
-}
-.full-modal .ant-modal-body {
-  height: calc(100% - 55px); /* Subtract header height */
-  overflow: auto;
+
+:deep(.ant-list-vertical .ant-list-item-meta-title) {
+  margin-bottom: 12px;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 16px;
+  line-height: 24px;
+  margin-top: -10px;
 }
 </style>
+
+

@@ -133,6 +133,7 @@ const openModal = (id: number) =>{
   axios.get('/forum/forumcontent/'+id).then((response) =>{
     const data = response.data;
     selectedItem.value = data.content;
+    console.log(selectedItem.value)
     modelValue.value = true
   })
 }
@@ -144,17 +145,18 @@ const openModal = (id: number) =>{
   color: white !important;
   border-color: green !important;
 }
-:deep(.ant-list-vertical .ant-list-item-meta-title) {
-  margin-top: -10px !important;
-  margin-bottom: 12px !important;
-  color: rgba(0, 0, 0, 0.85) !important;
-  font-size: 16px !important;
-  line-height: 24px !important;
-}
 :deep(.ant-list-item-meta-description) {
-    margin-top: -10px;
     color: rgba(0, 0, 0, 0.45);
-    font-size: 14px;
-    line-height: 22px;
+font-size: 14px;
+line-height: 22px;
+margin-top: -12px;
+}
+
+:deep(.ant-list-vertical .ant-list-item-meta-title) {
+  margin-bottom: 12px;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 16px;
+  line-height: 24px;
+  margin-top: -10px;
 }
 </style>

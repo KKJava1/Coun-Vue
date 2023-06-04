@@ -37,6 +37,11 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/doc/saveDocrecord",
                         "/forum/**"
                 );
+    }
 
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/file/**").addResourceLocations("file:D:/file/img/");
     }
 }

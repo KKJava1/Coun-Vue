@@ -53,16 +53,12 @@ public class EbookController {
         LOG.info("文件上传开始",avatar);
         LOG.info("文件名{}",avatar.getOriginalFilename());
         LOG.info("文件大小{}",avatar.getSize());
-
         //保存文件在本地
         String originalFilename = avatar.getOriginalFilename();
-        String savePath="D:/work/Book/"+originalFilename;
+        String savePath="D:/file/img/"+originalFilename;
         File dest=new File(savePath);
         avatar.transferTo(dest);
         LOG.info(dest.getAbsolutePath());
-
         return new CommonResp();
-
-
     }
 }
