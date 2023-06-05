@@ -79,6 +79,7 @@ public class UserService {
             // 更新
             user.setLoginName(null);
             user.setPassword(null);
+            user.setAvatar(req.getAvatar());
             userMapper.updateByPrimaryKeySelective(user);
         }
     }

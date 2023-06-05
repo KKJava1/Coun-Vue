@@ -29,6 +29,9 @@
         :loading="loading"
         @change="handleTableChange"
       >
+        <template #avatar="{ text: avatar }">
+          <img v-if ="avatar" :src="avatar" alt="avatar" />
+        </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
             <a-button type="primary" @click="resetPassword(record)">
@@ -59,6 +62,7 @@
     :confirm-loading="modalLoading"
     :user-data="user"
     @ok="handleModalOk"
+    @update="handleUserDataUpdate"
   >
   </form-register>
 
@@ -102,6 +106,11 @@
 
       const columns = [
         {
+          title:'头像',
+          dataIndex: 'avatar',
+          slots: { customRender: 'avatar' }
+        },
+        {
           title: '登陆名',
           dataIndex: 'loginName'
         },
@@ -138,7 +147,7 @@
           const data = response.data;
           if (data.success) {
             users.value = data.content.list;
-
+            console.log(data.content)
             // 重置分页按钮
             pagination.value.current = params.page;
             pagination.value.total = data.content.total;
@@ -147,7 +156,11 @@
           }
         });
       };
-
+      const handleUserDataUpdate = (updatedUserData: any) => {
+        // 当子组件的自定义事件触发时，更新用户数据
+        user.value = updatedUserData;
+        console.log('user.value',user.value)
+      };
       /**
        * 表格点击页码时触发
        */
@@ -166,13 +179,13 @@
       const handleModalOk = () => {
         modalLoading.value = true;
         user.value.password = hexMd5(user.value.password + KEY);
-
+        console.log('头像',user.value)
         axios.post("/user/save", user.value).then((response) => {
           modalLoading.value = false;
           const data = response.data; // data = commonResp
           if (data.success) {
             modalVisible.value = false;
-
+            console.log('user.valueuser.value',data)
             // 重新加载列表
             handleQuery({
               page: pagination.value.current,
@@ -264,7 +277,7 @@
         loading,
         handleTableChange,
         handleQuery,
-
+        handleUserDataUpdate,
         edit,
         add,
 
