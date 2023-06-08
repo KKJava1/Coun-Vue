@@ -29,9 +29,10 @@
         :loading="loading"
         @change="handleTableChange"
       >
-        <template #avatar="{ text: avatar }">
-          <img v-if ="avatar" :src="avatar" alt="avatar" />
+        <template #avatar="{ text: avatar, record }">
+          <img v-if ="avatar" :src="avatar" alt="avatar"  @click="selectAvatar(record)"/>
         </template>
+
         <template v-slot:action="{ text, record }">
           <a-space size="small">
             <a-button type="primary" @click="resetPassword(record)">
@@ -130,6 +131,13 @@
       ];
 
       /**
+       *  打开图片
+       * */
+      const selectAvatar = (record: any) =>{
+        console.log('record',record)
+        window.open(record.avatar);
+      }
+      /**
        * 数据查询
        **/
       const handleQuery = (params: any) => {
@@ -179,7 +187,6 @@
       const handleModalOk = () => {
         modalLoading.value = true;
         user.value.password = hexMd5(user.value.password + KEY);
-        console.log('头像',user.value)
         axios.post("/user/save", user.value).then((response) => {
           modalLoading.value = false;
           const data = response.data; // data = commonResp
@@ -285,7 +292,7 @@
         modalVisible,
         modalLoading,
         handleModalOk,
-
+        selectAvatar,
         handleDelete,
 
         resetModalVisible,

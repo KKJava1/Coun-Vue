@@ -135,12 +135,14 @@ import CommentComponent from './assembly/commpent.vue';
       };
       // 创建一个方法来获取评论
       const fetchComments = () => {
-        axios.get('/doc/comments/' + ebookId).then(response => {
-          const fetchedComments = response.data.content;
-          console.log("fetchedCommentsfetchedCommentsfetchedComments",fetchedComments)
-          commentCount.value = fetchedComments.length;
-          comments.value = fetchedComments;
-        });
+        const userId = store.state.user.id
+        if(userId !=null){
+          axios.get('/doc/comments/' + ebookId).then(response => {
+            const fetchedComments = response.data.content;
+            commentCount.value = fetchedComments.length;
+            comments.value = fetchedComments;
+          });
+        }
       }
 
       //收藏书本

@@ -78,7 +78,6 @@ const handleChange = (info: any) => {
     return;
   }
   if (info.file.status === 'done') {
-    // Get this url from response in real world.
     getBase64(info.file.originFileObj, (base64Url: string) => {
       imageUrl.value = base64Url;
       coverLoading.value = false;

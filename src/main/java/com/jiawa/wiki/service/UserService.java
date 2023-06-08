@@ -45,19 +45,14 @@ public class UserService {
         }
         PageHelper.startPage(req.getPage(), req.getSize());
         List<User> userList = userMapper.selectByExample(userExample);
-
         PageInfo<User> pageInfo = new PageInfo<>(userList);
         LOG.info("总行数：{}", pageInfo.getTotal());
         LOG.info("总页数：{}", pageInfo.getPages());
-
-
         // 列表复制
         List<UserQueryResp> list = CopyUtil.copyList(userList, UserQueryResp.class);
-
         PageResp<UserQueryResp> pageResp = new PageResp();
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(list);
-
         return pageResp;
     }
 
