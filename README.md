@@ -1,10 +1,10 @@
-# Coun
+# Coun-Vue
 
 ## 介绍
-Coun 在线书法欣赏
+
 ### Springboot+vue3
 项目采用了前后端分离技术；后端采用 springBoot 基本框架，数据库连接池技
-术，Redis+token权限验证；前端使用 vue3+vueCil 开发模式；使用了 axio+json，vuex，
+术，Redis+token权限验证；前端使用 vue3+vueCil 开发模式；使用了axios+Json，vuex，
 Ant Design Vue,router来实现页面功能。
 
 ## 技术栈
@@ -43,7 +43,7 @@ Webpack：打包工具
 引入quartz定时任务，可动态完成书本的点赞，阅读数，文档功能  
 利用websocket实时更新数据  
 新增AOP注解实现日志管理。  
-代码遵循阿里巴巴开发规范，利于开发者学习。  
+代码遵循RestFul风格，阿里巴巴开发规范，利于开发者学习。  
 
 
 
