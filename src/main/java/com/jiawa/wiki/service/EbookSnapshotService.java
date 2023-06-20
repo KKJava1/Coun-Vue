@@ -31,11 +31,11 @@ public class EbookSnapshotService {
      * 获取首页数值数据：总阅读数、总点赞数、今日阅读数、今日点赞数、今日预计阅读数、今日预计阅读增长
      */
     public List<StatisticResp> getStatistic() {
-        List<StatisticResp> statistic = ebookSnapshotMapperCust.getStatistic();
-        Date date = new Date();
+
         List<StatisticResp> statisticFromRedis = redisUtil.getStatisticFromRedis("statistic");
         LOG.info("访问Redis");
         if(statisticFromRedis == null){
+            List<StatisticResp> statistic = ebookSnapshotMapperCust.getStatistic();
             redisUtil.setStatisticToRedis("statistic",statistic,120);
             statisticFromRedis = statistic;
         }
