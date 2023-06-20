@@ -1,8 +1,11 @@
 package com.jiawa.wiki.service;
 
+import com.jiawa.wiki.controller.EbookSnapshotController;
 import com.jiawa.wiki.mapper.EbookSnapshotMapperCust;
 import com.jiawa.wiki.resp.StatisticResp;
 import com.jiawa.wiki.util.RedisUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.List;
 @Service
 public class EbookSnapshotService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(EbookSnapshotService.class);
     @Resource
     private EbookSnapshotMapperCust ebookSnapshotMapperCust;
     @Resource
@@ -29,9 +33,10 @@ public class EbookSnapshotService {
     public List<StatisticResp> getStatistic() {
         List<StatisticResp> statistic = ebookSnapshotMapperCust.getStatistic();
         Date date = new Date();
-        List<StatisticResp> statisticFromRedis = redisUtil.getStatisticFromRedis("statistic" + date);
+        List<StatisticResp> statisticFromRedis = redisUtil.getStatisticFromRedis("statistic");
+        LOG.info("访问Redis");
         if(statisticFromRedis == null){
-            redisUtil.setStatisticToRedis("statistic" + date,statistic,2000);
+            redisUtil.setStatisticToRedis("statistic",statistic,120);
             statisticFromRedis = statistic;
         }
         return statisticFromRedis;

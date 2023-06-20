@@ -9,6 +9,10 @@ import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.service.EbookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +20,9 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/ebook")
@@ -61,4 +68,18 @@ public class EbookController {
         LOG.info(dest.getAbsolutePath());
         return new CommonResp();
     }
+    //文件下载
+    @GetMapping("/download/avatar/{filename}")
+    public ResponseEntity<InputStreamResource> downloadAvatar(@PathVariable String filename) throws IOException {
+        Path path = Paths.get("D:/file/img/", filename);
+        InputStreamResource resource = new InputStreamResource(Files.newInputStream(path));
+        String mimeType = Files.probeContentType(path);
+        if (mimeType == null) { // fallback to the default content type if type could not be determined
+            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(mimeType))
+                .body(resource);
+    }
+
 }

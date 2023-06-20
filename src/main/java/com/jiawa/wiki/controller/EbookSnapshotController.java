@@ -3,6 +3,9 @@ package com.jiawa.wiki.controller;
 import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.StatisticResp;
 import com.jiawa.wiki.service.EbookSnapshotService;
+import com.jiawa.wiki.util.RedisUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +17,12 @@ import java.util.List;
 @RequestMapping("/ebook-snapshot")
 public class EbookSnapshotController {
 
+
     @Resource
     private EbookSnapshotService ebookSnapshotService;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     @GetMapping("/get-statistic")
     public CommonResp getStatistic() {

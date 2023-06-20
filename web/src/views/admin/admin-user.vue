@@ -133,10 +133,14 @@
       /**
        *  打开图片
        * */
-      const selectAvatar = (record: any) =>{
-        console.log('record',record)
-        window.open(record.avatar);
+      const selectAvatar = (record: any) => {
+        const filename = record.avatar.split('/').pop(); // 从 record.avatar 获取文件名
+        axios.get("/ebook/download/avatar/"+filename).then((resp)=>{
+          console.log(resp)
+          URL.createObjectURL(resp.config.url)
+        })
       }
+
       /**
        * 数据查询
        **/

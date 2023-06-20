@@ -39,7 +39,6 @@ public class ReadProgressService {
     public CommonResp<ReadProgress> obrecord(Long userId, Long ebookId) {
         CommonResp<ReadProgress> resp = new CommonResp<>();
         ReadProgress readProgress = readProgressMapper.selectDocrecord(userId,ebookId);
-
         // 获取Redis中的记录
         String lastReadDocIdStr = redisUtil.getUserLastReadDoc(userId);
 
