@@ -1,5 +1,6 @@
 package com.jiawa.wiki.util;
 
+import com.jiawa.wiki.resp.StatisticResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -59,5 +61,15 @@ public class RedisUtil {
         String key = "user:" + userId + ":lastReadDoc";
         return (String) redisTemplate.opsForValue().get(key);
     }
+
+    public List<StatisticResp> getStatisticFromRedis(String key) {
+        return (List<StatisticResp>) redisTemplate.opsForValue().get(key);
+    }
+
+
+    public void setStatisticToRedis(String key, List<StatisticResp> statisticResp, long expireTime) {
+        redisTemplate.opsForValue().set(key, statisticResp, expireTime, TimeUnit.SECONDS);
+    }
+
 
 }
