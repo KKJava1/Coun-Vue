@@ -99,7 +99,7 @@
 
     <a-row>
       <a-col :span="24">
-        <a-card style="width: 100%;height:300px;margin-top: 30px">
+        <a-card style="width: 100%;height:300px;margin-top: 40px">
           <div id="bookview" style="width: 100%;height:300px;"></div>
         </a-card>
       </a-col>
@@ -126,49 +126,62 @@
         // 基于准备好的dom，初始化echarts实例
         const bookDom = document.getElementById('bookview');
         if(bookDom){
-          bookDom.innerHTML='<div id="bookview" style="width: 1610px;height:300px;"></div>';
+          bookDom.innerHTML='<div id="bookview" style="width: 100%;height:300px;"></div>';
         }
         const bookViewChart = echarts.init(document.getElementById('bookview'));
         // 指定图表的配置项和数据
         const xAxis = [];
-        const seriesView = [];
-        const seriesVote = [];
+        const viewCount: any[] = [];
+        const percentage: any[] = [];
         for (let i = 0; i < list.length; i++) {
           const record = list[i];
           xAxis.push(record.name);
-          seriesView.push(record.viewIncrease);
-          seriesVote.push(record.voteIncrease);
+          viewCount.push(record.viewCount);
+          percentage.push(record.percentage);
         }
-
         const bookoption = {
-          title: {
-            text: '书本浏览量排行🚀'
+          grid: {
+            left: '1%', // 距离容器左侧的距离
+            right: '4%', // 距离容器右侧的距离
+            bottom: '3%', // 距离容器底部的距离
+            containLabel: true // 设置为 true，防止标签溢出容器
           },
-          tooltip: {},
+          title: {
+            text: '书本浏览量排行'
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: (params: any) => {
+              return `
+        浏览量: ${params.value}</br>
+        总占比: ${percentage[params.dataIndex]}%
+      `;
+            }
+          },
           legend: {
-            data: ['销量']
+            data: ['浏览量']
           },
           xAxis: {
             type: 'category',
-            boundaryGap: false,
-            data: xAxis
+            boundaryGap: true,
+            data: xAxis,
+
           },
-          yAxis: {},
+          yAxis: { type: 'value'},
           series: [
             {
-              name: '销量',
+              name: '浏览量',
               type: 'bar',
-              data: [5, 20, 36, 10, 10, 20]
+              data: viewCount
             }
           ]
         };
-
         // 使用刚指定的配置项和数据显示图表。
         bookViewChart.setOption(bookoption);
       }
       const selectbookview = () =>{
         axios.get("/ebook-snapshot/selectBookView").then((resp)=>{
-          const bookviewList = resp.data
+          const bookviewList = resp.data.content
           console.log("bookViewList",bookviewList)
           initbookView(bookviewList)
         })
