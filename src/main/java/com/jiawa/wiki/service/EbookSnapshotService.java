@@ -2,6 +2,8 @@ package com.jiawa.wiki.service;
 
 import com.jiawa.wiki.controller.EbookSnapshotController;
 import com.jiawa.wiki.mapper.EbookSnapshotMapperCust;
+import com.jiawa.wiki.req.EbookViewReq;
+import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.StatisticResp;
 import com.jiawa.wiki.util.RedisUtil;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ public class EbookSnapshotService {
     private RedisTemplate redisTemplate;
     @Resource
     private RedisUtil redisUtil;
+
     public void genSnapshot() {
         ebookSnapshotMapperCust.genSnapshot();
     }
@@ -34,14 +37,13 @@ public class EbookSnapshotService {
 
         List<StatisticResp> statisticFromRedis = redisUtil.getStatisticFromRedis("statistic");
         LOG.info("访问Redis");
-        if(statisticFromRedis == null){
+        if (statisticFromRedis == null) {
             List<StatisticResp> statistic = ebookSnapshotMapperCust.getStatistic();
-            redisUtil.setStatisticToRedis("statistic",statistic,120);
+            redisUtil.setStatisticToRedis("statistic", statistic, 120);
             statisticFromRedis = statistic;
         }
         return statisticFromRedis;
     }
-
 
 
     /**
@@ -51,4 +53,7 @@ public class EbookSnapshotService {
         return ebookSnapshotMapperCust.get30Statistic();
     }
 
+    public List<EbookViewReq> selectBookView() {
+        return ebookSnapshotMapperCust.selectBookView();
+    }
 }

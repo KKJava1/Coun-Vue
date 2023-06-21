@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 110vh;min-width: 1660px">
     <a-row>
       <a-col :span="24">
         <a-card>
@@ -88,9 +88,20 @@
       </a-col>
     </a-row>
     <br>
+
     <a-row>
-      <a-col :span="24" id="main-col">
-        <div id="main" style="width: 100%;height:300px;"></div>
+      <a-card style="width: 100%;height:300px">
+      <a-col :span="24" id="main-col" >
+        <div id="main"></div>
+      </a-col>
+      </a-card>
+    </a-row>
+
+    <a-row>
+      <a-col :span="24">
+        <a-card style="width: 100%;height:300px;margin-top: 30px">
+          <div id="bookview" style="width: 100%;height:300px;"></div>
+        </a-card>
       </a-col>
     </a-row>
   </div>
@@ -107,6 +118,62 @@
     setup () {
       const statistic = ref();
       statistic.value = {};
+
+      /**
+       * * 浏览量排行
+       * */
+      const initbookView =(list: any) =>{
+        // 基于准备好的dom，初始化echarts实例
+        const bookDom = document.getElementById('bookview');
+        if(bookDom){
+          bookDom.innerHTML='<div id="bookview" style="width: 1610px;height:300px;"></div>';
+        }
+        const bookViewChart = echarts.init(document.getElementById('bookview'));
+        // 指定图表的配置项和数据
+        const xAxis = [];
+        const seriesView = [];
+        const seriesVote = [];
+        for (let i = 0; i < list.length; i++) {
+          const record = list[i];
+          xAxis.push(record.name);
+          seriesView.push(record.viewIncrease);
+          seriesVote.push(record.voteIncrease);
+        }
+
+        const bookoption = {
+          title: {
+            text: '书本浏览量排行🚀'
+          },
+          tooltip: {},
+          legend: {
+            data: ['销量']
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxis
+          },
+          yAxis: {},
+          series: [
+            {
+              name: '销量',
+              type: 'bar',
+              data: [5, 20, 36, 10, 10, 20]
+            }
+          ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        bookViewChart.setOption(bookoption);
+      }
+      const selectbookview = () =>{
+        axios.get("/ebook-snapshot/selectBookView").then((resp)=>{
+          const bookviewList = resp.data
+          console.log("bookViewList",bookviewList)
+          initbookView(bookviewList)
+        })
+      }
+
       const getStatistic = () => {
         axios.get('/ebook-snapshot/get-statistic').then((response) => {
           const data = response.data;
@@ -214,19 +281,22 @@
           const data = response.data;
           if (data.success) {
             const statisticList = data.content;
-
+            console.log("30天",statisticList)
             init30DayEcharts(statisticList)
           }
         });
       };
 
+
       onMounted(() => {
         getStatistic();
         get30DayStatistic();
+        selectbookview();
       });
 
       return {
-        statistic
+        statistic,
+        initbookView
       }
     }
   });

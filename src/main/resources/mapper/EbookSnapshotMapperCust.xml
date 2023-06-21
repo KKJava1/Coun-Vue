@@ -70,4 +70,17 @@
             t1.`date` asc;
     </select>
 
+    <select id="selectBookView" resultType="com.jiawa.wiki.req.EbookViewReq">
+        SELECT
+            e.id,
+            e.name,
+            e.view_count,
+            (e.view_count / t.total_view_count) * 100 AS percentage
+        FROM
+            ebook e,
+            (SELECT SUM(view_count) AS total_view_count FROM ebook) AS t
+
+
+    </select>
+
 </mapper>
