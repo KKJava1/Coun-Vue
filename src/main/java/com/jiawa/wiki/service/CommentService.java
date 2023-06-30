@@ -47,7 +47,27 @@ public class CommentService {
         req.setCreateTime(now);
         commentMapper.insert(req);
     }
-
+//    public List<CommentResp> selectByEbookId(Long ebookId) {
+//        // 根据ebookId查询到电子书下的评论，包括用户信息和所有的回复
+//        List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
+//
+//        // 构建一个映射，用于快速查找每个评论的所有直接回复
+//        Map<Long, List<CommentResp>> repliesMap = rawComments.stream()
+//                .filter(comment -> comment.getParentId() != null)
+//                .collect(Collectors.groupingBy(CommentResp::getParentId));
+//
+//        // 递归地添加每个评论的所有回复
+//        for (CommentResp comment : rawComments) {
+//            addReplies(comment, repliesMap);
+//        }
+//
+//        // 过滤出所有顶级评论（即没有父评论的评论）
+//        List<CommentResp> topComments = rawComments.stream()
+//                .filter(comment -> comment.getParentId() == null)
+//                .collect(Collectors.toList());
+//
+//        return topComments;
+//    }
     public List<CommentResp> selectByEbookId(Long ebookId) {
         //根据ebookId查询到电子书下的评论
         List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
@@ -84,19 +104,14 @@ public class CommentService {
     }
     //递归
     private void addReplies(CommentResp comment, Map<Long, List<CommentResp>> repliesMap) {
-        List<CommentResp> directReplies = repliesMap.get(comment.getId());
-        if (directReplies == null) {
-            // 如果没有直接回复，就添加一个空数组
-            comment.setReplies(new ArrayList<>());
-        } else {
-            // 如果有直接回复，就递归地添加它们的所有回复
-            for (CommentResp reply : directReplies) {
+        List<CommentResp> replies = repliesMap.get(comment.getId());
+        if (replies != null) {
+            for (CommentResp reply : replies) {
                 addReplies(reply, repliesMap);
             }
-            comment.setReplies(directReplies);
         }
+        comment.setReplies(replies != null ? replies : new ArrayList<>());
     }
-
 
     //回复评论
     public CommentResp saveReply(CommentResp req) {

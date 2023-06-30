@@ -56,7 +56,6 @@ public class LogAspect {
         LOG.info("远程地址: {}", request.getRemoteAddr());
 
         RequestContext.setRemoteAddr(getRemoteIp(request));
-
         // 打印请求参数
         Object[] args = joinPoint.getArgs();
 		// LOG.info("请求参数: {}", JSONObject.toJSONString(args));

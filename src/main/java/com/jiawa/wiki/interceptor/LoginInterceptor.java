@@ -70,6 +70,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-//        LOG.info("LogInterceptor 结束");
+        // 清除ThreadLocal中的数据
+        LoginUserContext.setUser(null);
+        LOG.info("LogInterceptor 结束");
     }
 }
