@@ -69,43 +69,34 @@ public class CommentService {
 //        return topComments;
 //    }
     public List<CommentResp> selectByEbookId(Long ebookId) {
-        //根据ebookId查询到电子书下的评论
-        List<CommentResp> rawComments = commentMapper.selectListByEbookId(ebookId);
-        //循环所有的userIds将他组成一个集合进行一个批量查询
-        List<Long> userIds = rawComments.stream().map(CommentResp::getUserId).collect(Collectors.toList());
-        List<User> userList = userMapper.selectByIds(userIds);
-
-        //创建一个Map，用于后续的存储
-        Map<Long, User> UserMap = userList.stream().collect(Collectors.toMap(User::getId, Function.identity()));
-
+        List<CommentResp> commentRespList = commentMapper.selectCommentResp(ebookId);
         // 创建一个映射，用于快速查找每个评论的所有直接回复
         Map<Long, List<CommentResp>> repliesMap = new HashMap<>();
-        for (CommentResp comment : rawComments) {
-            //根据键值对进行一个对应
-            User user = UserMap.get(comment.getUserId());
-            comment.setName(user.getName());
-            comment.setAvatar(user.getAvatar());
+        //所有顶级评论的列表
+        ArrayList<CommentResp> pidList = new ArrayList<>();
+        for (CommentResp comment : commentRespList) {
             if (comment.getParentId() != null) {
-                repliesMap.computeIfAbsent(comment.getParentId(), k -> new ArrayList<>()).add(comment);
-                User replyUser = UserMap.get(comment.getReplytouserId());
-                comment.setReplyname(replyUser.getName());
+                //通过getOrDefault方法，得到父id的key值的一个arrayList，如果没有就创建一个
+                List<CommentResp> respList = repliesMap.getOrDefault(comment.getParentId(), new ArrayList<>());
+                respList.add(comment);
+                repliesMap.put(comment.getParentId(), respList);
             }
-         }
-        // 递归地添加每个评论的所有回复
-        for (CommentResp comment : rawComments) {
+            else {
+                pidList.add(comment);
+            }
+        }
+        // 对每个顶级评论进行递归，添加所有级别的子评论
+        for (CommentResp comment : pidList) {
             addReplies(comment, repliesMap);
         }
-        // 过滤出所有顶级评论（即没有父评论的评论）
-        List<CommentResp> topComments = rawComments.stream()
-                .filter(comment -> comment.getParentId() == null)
-                .collect(Collectors.toList());
-
-        return topComments;
+        return pidList;
     }
     //递归
     private void addReplies(CommentResp comment, Map<Long, List<CommentResp>> repliesMap) {
+        //调用map的get方法，通过id获取到对应的value
         List<CommentResp> replies = repliesMap.get(comment.getId());
         if (replies != null) {
+            //假如这个id底下有子评论，就进行一个递归调用
             for (CommentResp reply : replies) {
                 addReplies(reply, repliesMap);
             }

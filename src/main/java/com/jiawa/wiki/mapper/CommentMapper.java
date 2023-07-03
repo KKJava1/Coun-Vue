@@ -35,4 +35,6 @@ public interface CommentMapper {
     int insertCommentResp(CommentResp req);
 
     CommentResp selectByCommentRespId(Long id);
+
+    List<CommentResp> selectCommentResp(Long ebookId);
 }

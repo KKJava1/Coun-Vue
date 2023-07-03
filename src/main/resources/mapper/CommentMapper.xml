@@ -182,6 +182,12 @@
   <select id="selectByCommentRespId" resultType="com.jiawa.wiki.resp.CommentResp">
     select * from comment where id=#{id}
   </select>
+  <select id="selectCommentResp" resultType="com.jiawa.wiki.resp.CommentResp">
+    SELECT comment.*, user.avatar, user.name
+    FROM comment
+           INNER JOIN user ON comment.user_id = user.id
+    WHERE comment.ebook_id = #{ebookId}
+  </select>
   <update id="updateByExampleSelective" parameterType="map">
     update comment
     <set>
