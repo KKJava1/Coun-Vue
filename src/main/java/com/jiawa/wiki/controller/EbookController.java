@@ -10,7 +10,6 @@ import com.jiawa.wiki.service.EbookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,6 +64,7 @@ public class EbookController {
         String savePath="D:/file/img/"+originalFilename;
         File dest=new File(savePath);
         avatar.transferTo(dest);
+
         LOG.info(dest.getAbsolutePath());
         return new CommonResp();
     }

@@ -13,7 +13,7 @@ public class WsService {
     @Resource
     public WebSocketServer webSocketServer;
 
-    @Async
+    @Async("taskExecutor")
     public void sendInfo(String message, String logId) {
         MDC.put("LOG_ID", logId);
         webSocketServer.sendInfo(message);

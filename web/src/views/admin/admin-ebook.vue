@@ -19,6 +19,14 @@
               新增
             </a-button>
           </a-form-item>
+          <!-- 添加排序选择 -->
+          <a-form-item>
+            <a-select v-model:value="param.sortColumn" placeholder="请选择排序方式" @change="handleQuery({page: 1, size: pagination.pageSize})">
+              <a-select-option value="view_count">按阅读数排序</a-select-option>
+              <a-select-option value="vote_count">按点赞数排序</a-select-option>
+              <a-select-option value="doc_count">按文档数排序</a-select-option>
+            </a-select>
+          </a-form-item>
         </a-form>
       </p>
       <a-table
@@ -57,6 +65,7 @@
             </a-popconfirm>
           </a-space>
         </template>
+
       </a-table>
     </a-layout-content>
   </a-layout>
@@ -209,7 +218,8 @@
           params: {
             page: params.page,
             size: params.size,
-            name: param.value.name
+            name: param.value.name,
+            sortColumn: param.value.sortColumn
           }
         }).then((response) => {
           loading.value = false;

@@ -50,14 +50,14 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
-        Object object = redisTemplate.opsForValue().get(token);
-        if (object == null) {
+        Object Usertoken = redisTemplate.opsForValue().get(token);
+        if (Usertoken == null) {
             LOG.warn( "token无效，请求被拦截" );
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         } else {
-            LOG.info("已登录：{}", object);
-            LoginUserContext.setUser(JSON.parseObject((String) object, UserLoginResp.class));
+            LOG.info("已登录：{}", token);
+            LoginUserContext.setUser(JSON.parseObject((String) Usertoken, UserLoginResp.class));
             return true;
         }
     }

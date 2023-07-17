@@ -22,6 +22,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +91,9 @@ public class UserController {
         return resp;
     }
     @PostMapping("/login")
-    public CommonResp login(@Valid @RequestBody UserLoginReq req) {
+    public CommonResp login(@Valid @RequestBody UserLoginReq req, HttpServletRequest request) {
+        String header = request.getHeader("User-Agent");
+        System.out.println(header);
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp<UserLoginResp> resp = new CommonResp<>();
         UserLoginResp userLoginResp = userService.login(req);
