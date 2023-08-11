@@ -101,10 +101,12 @@ public class UserController {
         Long token = snowFlake.nextId();
         LOG.info("生成单点登录token：{}，并放入redis中", token);
         userLoginResp.setToken(token.toString());
-        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
+        // 设置token过期时间为30分钟
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 1800, TimeUnit.SECONDS);
         resp.setContent(userLoginResp);
         return resp;
     }
+
 
     @GetMapping("/logout/{token}")
     public CommonResp logout(@PathVariable String token) {
