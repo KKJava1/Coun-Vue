@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+/**
+ * @author k
+ */
 @Component
 public class EbookSnapshotJob {
 

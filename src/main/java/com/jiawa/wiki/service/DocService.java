@@ -22,12 +22,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class DocService {
@@ -51,6 +55,9 @@ public class DocService {
 
     @Resource
     public WsService wsService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 //     @Autowired
 //     private RocketMQTemplate rocketMQTemplate;
@@ -142,9 +149,10 @@ public class DocService {
             // docMapperCust.increaseVoteCount(id);
             // 远程IP+doc.id作为key，24小时内不能重复
             String ip = RequestContext.getRemoteAddr();
-            if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 5000)) {
-                docMapperCust.increaseVoteCount(id);
-            } else {
+            if (!stringRedisTemplate.hasKey("DOC_VOTE_" + id + "_" + ip)) {
+                stringRedisTemplate.opsForValue().increment("VOTE_COUNT_" + id);
+                stringRedisTemplate.opsForValue().set("DOC_VOTE_" + id + "_" + ip, "1", 5, TimeUnit.SECONDS);
+            }  else {
                 throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
             }
 
@@ -154,6 +162,9 @@ public class DocService {
             wsService.sendInfo("【" + docDb.getName() + "】被点赞！", logId);
 //             rocketMQTemplate.convertAndSend("VOTE_TOPIC", "【" + docDb.getName() + "】被点赞！");
         }
+
+
+
 
     public void updateEbookInfo() {
         docMapperCust.updateEbookInfo();

@@ -12,10 +12,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 // @ComponentScan({"com.jiawa", "com.test"})
 @ComponentScan("com.jiawa")
-@SpringBootApplication
 @MapperScan("com.jiawa.wiki.mapper")
 @EnableScheduling
 @EnableAsync
+@SpringBootApplication
 public class WikiApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(WikiApplication.class);
