@@ -3,15 +3,19 @@ package com.jiawa.wiki.util;
 import com.jiawa.wiki.resp.StatisticResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -52,6 +56,17 @@ public class RedisUtil {
         LOG.info("保存用户 {} 的浏览记录到Redis，docId：{}，过期时间：{}秒", userId, docId, expireTime);
     }
 
+    /**
+     * 清空redis
+     */
+    public static void cleanRedis() {
+        StringRedisTemplate stringRedisTemplate = ApplicationContextRegister.getBean(StringRedisTemplate.class);
+        Set<String> keys = stringRedisTemplate.keys("*");
+        Iterator<String> it1 = keys.iterator();
+        while (it1.hasNext()) {
+            stringRedisTemplate.delete(it1.next());
+        }
+    }
     /**
      * 从Redis中获取用户的最后一次浏览记录
      * @param userId
