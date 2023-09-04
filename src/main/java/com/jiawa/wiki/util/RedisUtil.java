@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -61,12 +62,12 @@ public class RedisUtil {
      */
     public static void cleanRedis() {
         StringRedisTemplate stringRedisTemplate = ApplicationContextRegister.getBean(StringRedisTemplate.class);
-        Set<String> keys = stringRedisTemplate.keys("*");
-        Iterator<String> it1 = keys.iterator();
-        while (it1.hasNext()) {
-            stringRedisTemplate.delete(it1.next());
-        }
+        stringRedisTemplate.execute((RedisCallback<Object>) connection -> {
+            connection.flushDb();
+            return null;
+        });
     }
+
     /**
      * 从Redis中获取用户的最后一次浏览记录
      * @param userId

@@ -2,6 +2,7 @@ package com.jiawa.wiki.controller;
 
 import com.jiawa.wiki.domain.Ebook;
 import com.jiawa.wiki.req.EbookViewReq;
+import com.jiawa.wiki.req.EbookVoteReq;
 import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.StatisticResp;
 import com.jiawa.wiki.service.EbookSnapshotService;
@@ -46,6 +47,13 @@ public class EbookSnapshotController {
         List<EbookViewReq> viewReqList = ebookSnapshotService.selectBookView();
         CommonResp<List<EbookViewReq>> commonResp = new CommonResp<>();
         commonResp.setContent(viewReqList);
+        return commonResp;
+    }
+    @GetMapping("/selectVoteView")
+    public CommonResp selectVoteView() {
+        List<EbookVoteReq> voteReqList = ebookSnapshotService.selectVoteView();
+        CommonResp<List<EbookVoteReq>> commonResp = new CommonResp<>();
+        commonResp.setContent(voteReqList);
         return commonResp;
     }
 

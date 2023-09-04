@@ -100,10 +100,19 @@
     <a-row>
       <a-col :span="24">
         <a-card style="width: 100%;height:300px;margin-top: 40px">
-          <div id="bookview" style="width: 100%;height:300px;"></div>
+          <div id="bookView" style="width: 100%;height:300px;"></div>
         </a-card>
       </a-col>
     </a-row>
+
+    <a-row>
+      <a-col :span="24">
+        <a-card style="width: 100%;height:300px;margin-top: 40px">
+          <div id="voteView" style="width: 100%;height:300px;"></div>
+        </a-card>
+      </a-col>
+    </a-row>
+
   </div>
 </template>
 
@@ -120,15 +129,82 @@
       statistic.value = {};
 
       /**
+       * * 点赞量排名
+       * */
+      const initVoteView =(list: any) =>{
+        // 基于准备好的dom，初始化echarts实例
+        const voteDom = document.getElementById('voteView');
+        if(voteDom){
+          voteDom.innerHTML='<div id="voteView" style="width: 100%;height:300px;"></div>';
+        }
+        const voteViewChart = echarts.init(document.getElementById('voteView'));
+        // 指定图表的配置项和数据
+        const xAxis = [];
+        const voteCount: any[] = [];
+        const percentage: any[] = [];
+        for (let i = 0; i < list.length; i++) {
+          const record = list[i];
+          xAxis.push(record.name);
+          voteCount.push(record.voteCount);
+          percentage.push(record.percentage);
+        }
+        const voteOption = {
+          grid: {
+            left: '1%', // 距离容器左侧的距离
+            right: '4%', // 距离容器右侧的距离
+            bottom: '3%', // 距离容器底部的距离
+            containLabel: true // 设置为 true，防止标签溢出容器
+          },
+          title: {
+            text: '书本点赞量排行'
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: (params: any) => {
+              return `
+        点赞量: ${params.value}</br>
+        总占比: ${percentage[params.dataIndex]}%
+      `;
+            }
+          },
+          legend: {
+            data: ['点赞量']
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: true,
+            data: xAxis,
+          },
+          yAxis: { type: 'value'},
+          series: [
+            {
+              name: '点赞量',
+              type: 'bar',
+              data: voteCount
+            }
+          ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        voteViewChart.setOption(voteOption);
+      }
+      const selectvoteView = () =>{
+        axios.get("/ebook-snapshot/selectVoteView").then((resp)=>{
+          const voteViewList = resp.data.content
+          console.log("voteViewList",voteViewList)
+          initVoteView(voteViewList)
+        })
+      }
+
+      /**
        * * 浏览量排行
        * */
       const initbookView =(list: any) =>{
         // 基于准备好的dom，初始化echarts实例
-        const bookDom = document.getElementById('bookview');
+        const bookDom = document.getElementById('bookView');
         if(bookDom){
-          bookDom.innerHTML='<div id="bookview" style="width: 100%;height:300px;"></div>';
+          bookDom.innerHTML='<div id="bookView" style="width: 100%;height:300px;"></div>';
         }
-        const bookViewChart = echarts.init(document.getElementById('bookview'));
+        const bookViewChart = echarts.init(document.getElementById('bookView'));
         // 指定图表的配置项和数据
         const xAxis = [];
         const viewCount: any[] = [];
@@ -179,11 +255,11 @@
         // 使用刚指定的配置项和数据显示图表。
         bookViewChart.setOption(bookoption);
       }
-      const selectbookview = () =>{
+      const selectbookView = () =>{
         axios.get("/ebook-snapshot/selectBookView").then((resp)=>{
-          const bookviewList = resp.data.content
-          console.log("bookViewList",bookviewList)
-          initbookView(bookviewList)
+          const bookViewList = resp.data.content
+          console.log("bookViewList",bookViewList)
+          initbookView(bookViewList)
         })
       }
 
@@ -291,12 +367,14 @@
       onMounted(() => {
         getStatistic();
         get30DayStatistic();
-        selectbookview();
+        selectbookView();
+        selectvoteView();
       });
 
       return {
         statistic,
-        initbookView
+        initbookView,
+        selectvoteView
       }
     }
   });

@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-// @ComponentScan({"com.jiawa", "com.test"})
+
 @ComponentScan("com.jiawa")
 @MapperScan("com.jiawa.wiki.mapper")
 @EnableScheduling
@@ -26,7 +26,7 @@ public class WikiApplication {
         Environment env = app.run(args).getEnvironment();
         LOG.info("#### 开始清理redis...");
         RedisUtil.cleanRedis();
-        LOG.info("#### 清理完毕 ####");
+        LOG.info("#### 清理redis完毕 ####");
         LOG.info("启动成功！！");
         LOG.info("地址: \thttp://127.0.0.1:{}", env.getProperty("server.port"));
     }

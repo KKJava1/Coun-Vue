@@ -146,8 +146,6 @@ public class DocService {
          * 点赞
          */
         public void vote(Long id) {
-            // docMapperCust.increaseVoteCount(id);
-            // 远程IP+doc.id作为key，24小时内不能重复
             String ip = RequestContext.getRemoteAddr();
             if (!stringRedisTemplate.hasKey("DOC_VOTE_" + id + "_" + ip)) {
                 stringRedisTemplate.opsForValue().increment("VOTE_COUNT_" + id);
@@ -155,7 +153,6 @@ public class DocService {
             }  else {
                 throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
             }
-
             // 推送消息
             Doc docDb = docMapper.selectByPrimaryKey(id);
             String logId = MDC.get("LOG_ID");

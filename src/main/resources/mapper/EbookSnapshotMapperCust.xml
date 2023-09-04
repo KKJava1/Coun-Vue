@@ -80,6 +80,16 @@
             ebook e,
             (SELECT SUM(view_count) AS total_view_count FROM ebook) AS t
     </select>
+    <select id="selectVoteView" resultType="com.jiawa.wiki.req.EbookVoteReq">
+        SELECT
+            e.id,
+            e.name,
+            e.vote_count,
+            ROUND((e.vote_count / t.total_vote_count) * 100, 2) AS percentage
+        FROM
+            ebook e,
+            (SELECT SUM(vote_count) AS total_vote_count FROM ebook) AS t
+    </select>
 
 
 </mapper>
