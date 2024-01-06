@@ -1,5 +1,6 @@
 package com.jiawa.wiki.websocket;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -60,16 +61,20 @@ public class WebSocketServer {
     /**
      * 群发消息
      */
-    public void sendInfo(String message) {
+    public void sendInfo(String type, String message) {
+        JSONObject json = new JSONObject();
+        json.put("type", type); // 消息类型
+        json.put("content", message); // 消息内容
+
         for (String token : map.keySet()) {
             Session session = map.get(token);
             try {
-                session.getBasicRemote().sendText(message);
+                session.getBasicRemote().sendText(json.toString());
             } catch (IOException e) {
-                LOG.error("推送消息失败：{}，内容：{}", token, message);
+                LOG.error("推送消息失败：{}，内容：{}", token, json.toString());
             }
-            LOG.info("推送消息：{}，内容：{}", token, message);
         }
     }
+
 
 }

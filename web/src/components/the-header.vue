@@ -24,13 +24,6 @@
       <a-menu-item key="/admin/forum" :style="user.id? {} : {display:'none'}">
         <router-link to="/admin/forum">讨论版</router-link>
       </a-menu-item>
-      <a-menu-item key="search" :style="user.id ? {} : {display:'none'}">
-        <a-input-search
-            placeholder="输入关键字"
-            style="width: 200px;"
-            @search="handleSearch"
-        />
-      </a-menu-item>
       <a-popconfirm
         title="确认退出登录?"
         ok-text="是"
@@ -97,13 +90,6 @@
     name: 'the-header',
     components: {FormRegister},
     setup () {
-      // 搜索处理函数
-      const handleSearch = (value: string) => {
-        console.log("进行搜索: ", value);
-        // 在这里，你可以添加调用后端接口的逻辑
-        // 例如，使用axios去请求后端搜索接口
-      };
-
       const router = useRouter();
       // 登录后保存
       const user = computed(() => store.state.user);
@@ -212,8 +198,7 @@
         login,
         register,
         user,
-        logout,
-        handleSearch
+        logout
       }
     }
   });

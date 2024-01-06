@@ -15,10 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -43,16 +41,6 @@ public class EbookService {
         if (!ObjectUtils.isEmpty(req.getCategoryId2())) {
             criteria.andCategory2IdEqualTo(req.getCategoryId2());
         }
-        // 设置排序字段
-        if (!ObjectUtils.isEmpty(req.getSortColumn())) {
-            List<String> validSortColumns = Arrays.asList("doc_count", "read_count", "like_count"); // 预定义的有效字段列表
-            if (validSortColumns.contains(req.getSortColumn())) {
-                ebookExample.setOrderByClause(req.getSortColumn() + " desc");
-            } else {
-                // 抛出异常或者设置默认排序字段
-                ebookExample.setOrderByClause("doc_count desc"); // 使用默认排序字段
-            }
-        }
         PageHelper.startPage(req.getPage(), req.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
@@ -72,17 +60,24 @@ public class EbookService {
     /**
      * 保存
      */
-    public void save(EbookSaveReq req) {
-        Ebook ebook = CopyUtil.copy(req, Ebook.class);
-        if (ObjectUtils.isEmpty(req.getId())) {
-            // 新增
-            ebook.setId(snowFlake.nextId());
-            ebookMapper.insert(ebook);
-        } else {
-            // 更新
-            ebookMapper.updateByPrimaryKey(ebook);
+    public boolean save(EbookSaveReq req) {
+        try {
+            Ebook ebook = CopyUtil.copy(req, Ebook.class);
+            if (ObjectUtils.isEmpty(req.getId())) {
+                // 新增
+                ebook.setId(snowFlake.nextId());
+                ebookMapper.insert(ebook);
+            } else {
+                // 更新
+                ebookMapper.updateByPrimaryKey(ebook);
+            }
+            return true; // 操作成功
+        } catch (Exception e) {
+            // 处理异常，例如记录日志
+            return false; // 操作失败
         }
     }
+
 
     public void delete(Long id) {
         ebookMapper.deleteByPrimaryKey(id);

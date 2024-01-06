@@ -7,11 +7,15 @@ import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.EbookQueryResp;
 import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.service.EbookService;
+import com.jiawa.wiki.service.WsService;
+import io.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +36,8 @@ public class EbookController {
     @Resource
     private EbookService ebookService;
 
+    @Resource
+    private WsService wsService;
     @GetMapping("/list")
     public CommonResp list(@Valid EbookQueryReq req) {
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
@@ -43,9 +49,15 @@ public class EbookController {
     @PostMapping("/save")
     public CommonResp save(@Valid @RequestBody EbookSaveReq req) {
         CommonResp resp = new CommonResp<>();
-        ebookService.save(req);
+        boolean success = ebookService.save(req);
+        resp.setSuccess(success);
+        resp.setMessage(success ? "保存成功" : "保存失败");
+        if(success && ObjectUtils.isEmpty(req.getId()) ){
+            wsService.sendAddEbook("【" + req.getName() + "】发布！");
+        }
         return resp;
     }
+
 
     @DeleteMapping("/delete/{id}")
     public CommonResp delete(@PathVariable Long id) {
@@ -64,7 +76,6 @@ public class EbookController {
         String savePath="D:/file/img/"+originalFilename;
         File dest=new File(savePath);
         avatar.transferTo(dest);
-
         LOG.info(dest.getAbsolutePath());
         return new CommonResp();
     }

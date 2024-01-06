@@ -21,11 +21,22 @@
         console.log('WebSocket连接成功，状态码：', websocket.readyState)
       };
       const onMessage = (event: any) => {
+        const data = JSON.parse(event.data);
         console.log('WebSocket收到消息：', event.data);
-        notification['info']({
-          message: '收到消息',
-          description: event.data,
-        });
+        if(data.type == 'vote_type'){
+          console.log("执行点赞消息通知")
+          notification['info']({
+            message: '消息',
+            description: data.content,
+          });
+        }
+        if(data.type == 'addEbook_type'){
+          console.log("执行新增书本操作")
+          notification['info']({
+            message: '消息',
+            description: data.content,
+          });
+        }
       };
       const onError = () => {
         console.log('WebSocket连接错误，状态码：', websocket.readyState)

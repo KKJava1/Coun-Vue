@@ -2,7 +2,6 @@ package com.jiawa.wiki.config;
 
 //import com.jiawa.wiki.interceptor.ActionInterceptor;
 import com.jiawa.wiki.interceptor.LoginInterceptor;
-import com.jiawa.wiki.interceptor.RefreshInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -15,8 +14,6 @@ public class SpringMvcConfig implements WebMvcConfigurer {
 
     @Resource
     LoginInterceptor loginInterceptor;
-    @Resource
-    RefreshInterceptor refreshInterceptor;
 
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
@@ -39,9 +36,7 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/doc/collect",
                         "/doc/saveDocrecord",
                         "/forum/**"
-                ).order(1);
-        //通过设置order参数来调整拦截器进入的顺序
-        registry.addInterceptor(refreshInterceptor).addPathPatterns("/**").order(0);
+                );
     }
 
 

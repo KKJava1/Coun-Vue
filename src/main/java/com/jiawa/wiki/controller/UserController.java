@@ -22,7 +22,6 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -91,9 +90,7 @@ public class UserController {
         return resp;
     }
     @PostMapping("/login")
-    public CommonResp login(@Valid @RequestBody UserLoginReq req, HttpServletRequest request) {
-        String header = request.getHeader("User-Agent");
-        System.out.println(header);
+    public CommonResp login(@Valid @RequestBody UserLoginReq req) {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp<UserLoginResp> resp = new CommonResp<>();
         UserLoginResp userLoginResp = userService.login(req);
@@ -101,12 +98,10 @@ public class UserController {
         Long token = snowFlake.nextId();
         LOG.info("生成单点登录token：{}，并放入redis中", token);
         userLoginResp.setToken(token.toString());
-        // 设置token过期时间为30分钟
-        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 1800, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
         resp.setContent(userLoginResp);
         return resp;
     }
-
 
     @GetMapping("/logout/{token}")
     public CommonResp logout(@PathVariable String token) {

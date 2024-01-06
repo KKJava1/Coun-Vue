@@ -1,7 +1,6 @@
 package com.jiawa.wiki.mapper;
 
 import com.jiawa.wiki.req.EbookViewReq;
-import com.jiawa.wiki.req.EbookVoteReq;
 import com.jiawa.wiki.resp.StatisticResp;
 
 import java.util.List;
@@ -15,6 +14,4 @@ public interface EbookSnapshotMapperCust {
     List<StatisticResp> get30Statistic();
 
     List<EbookViewReq> selectBookView();
-
-    List<EbookVoteReq> selectVoteView();
 }

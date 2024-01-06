@@ -3,20 +3,15 @@ package com.jiawa.wiki.util;
 import com.jiawa.wiki.resp.StatisticResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -55,17 +50,6 @@ public class RedisUtil {
         String key = "user:" + userId + ":lastReadDoc";
         redisTemplate.opsForValue().set(key, docId, expireTime, TimeUnit.SECONDS);
         LOG.info("保存用户 {} 的浏览记录到Redis，docId：{}，过期时间：{}秒", userId, docId, expireTime);
-    }
-
-    /**
-     * 清空redis
-     */
-    public static void cleanRedis() {
-        StringRedisTemplate stringRedisTemplate = ApplicationContextRegister.getBean(StringRedisTemplate.class);
-        stringRedisTemplate.execute((RedisCallback<Object>) connection -> {
-            connection.flushDb();
-            return null;
-        });
     }
 
     /**

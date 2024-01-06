@@ -7,16 +7,6 @@ public class EbookQueryReq extends PageReq {
 
     private Long categoryId2;
 
-    private String sortColumn;
-
-    public String getSortColumn() {
-        return sortColumn;
-    }
-
-    public void setSortColumn(String sortColumn) {
-        this.sortColumn = sortColumn;
-    }
-
     public Long getId() {
         return id;
     }
@@ -47,7 +37,6 @@ public class EbookQueryReq extends PageReq {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", categoryId2=" + categoryId2 +
-                ", sortColumn='" + sortColumn + '\'' +
-                '}';
+                "} " + super.toString();
     }
 }

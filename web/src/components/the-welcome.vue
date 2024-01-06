@@ -100,19 +100,10 @@
     <a-row>
       <a-col :span="24">
         <a-card style="width: 100%;height:300px;margin-top: 40px">
-          <div id="bookView" style="width: 100%;height:300px;"></div>
+          <div id="bookview" style="width: 100%;height:300px;"></div>
         </a-card>
       </a-col>
     </a-row>
-
-    <a-row>
-      <a-col :span="24">
-        <a-card style="width: 100%;height:300px;margin-top: 40px">
-          <div id="voteView" style="width: 100%;height:300px;"></div>
-        </a-card>
-      </a-col>
-    </a-row>
-
   </div>
 </template>
 
@@ -127,139 +118,97 @@
     setup () {
       const statistic = ref();
       statistic.value = {};
-
-      /**
-       * * 点赞量排名
-       * */
-      const initVoteView =(list: any) =>{
-        // 基于准备好的dom，初始化echarts实例
-        const voteDom = document.getElementById('voteView');
-        if(voteDom){
-          voteDom.innerHTML='<div id="voteView" style="width: 100%;height:300px;"></div>';
+      // 假数据生成函数
+      function generateFakeData({numEntries}: { numEntries: any }) {
+        const data = [];
+        for (let i = 0; i < numEntries; i++) {
+          data.push([
+            `User ${i}`,    // 用户名
+            Math.floor(Math.random() * 100), // 年龄，随机数0-99
+            'Profession',   // 职业，这里简化处理为固定值
+            Math.floor(Math.random() * 500), // 分数，随机数0-499
+            `2011-${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 28) + 1}` // 随机日期
+          ]);
         }
-        const voteViewChart = echarts.init(document.getElementById('voteView'));
-        // 指定图表的配置项和数据
-        const xAxis = [];
-        const voteCount: any[] = [];
-        const percentage: any[] = [];
-        for (let i = 0; i < list.length; i++) {
-          const record = list[i];
-          xAxis.push(record.name);
-          voteCount.push(record.voteCount);
-          percentage.push(record.percentage);
-        }
-        const voteOption = {
-          grid: {
-            left: '1%', // 距离容器左侧的距离
-            right: '4%', // 距离容器右侧的距离
-            bottom: '3%', // 距离容器底部的距离
-            containLabel: true // 设置为 true，防止标签溢出容器
-          },
-          title: {
-            text: '书本点赞量排行'
-          },
-          tooltip: {
-            trigger: 'item',
-            formatter: (params: any) => {
-              return `
-        点赞量: ${params.value}</br>
-        总占比: ${percentage[params.dataIndex]}%
-      `;
-            }
-          },
-          legend: {
-            data: ['点赞量']
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: true,
-            data: xAxis,
-          },
-          yAxis: { type: 'value'},
-          series: [
-            {
-              name: '点赞量',
-              type: 'bar',
-              data: voteCount
-            }
-          ]
-        };
-        // 使用刚指定的配置项和数据显示图表。
-        voteViewChart.setOption(voteOption);
+        return data;
       }
-      const selectvoteView = () =>{
-        axios.get("/ebook-snapshot/selectVoteView").then((resp)=>{
-          const voteViewList = resp.data.content
-          console.log("voteViewList",voteViewList)
-          initVoteView(voteViewList)
-        })
-      }
-
       /**
        * * 浏览量排行
        * */
       const initbookView =(list: any) =>{
         // 基于准备好的dom，初始化echarts实例
-        const bookDom = document.getElementById('bookView');
+        const bookDom = document.getElementById('bookview');
         if(bookDom){
-          bookDom.innerHTML='<div id="bookView" style="width: 100%;height:300px;"></div>';
+          bookDom.innerHTML='<div id="bookview" style="width: 100%;height:300px;"></div>';
         }
-        const bookViewChart = echarts.init(document.getElementById('bookView'));
+        const bookViewChart = echarts.init(document.getElementById('bookview'));
         // 指定图表的配置项和数据
-        const xAxis = [];
-        const viewCount: any[] = [];
-        const percentage: any[] = [];
-        for (let i = 0; i < list.length; i++) {
-          const record = list[i];
-          xAxis.push(record.name);
-          viewCount.push(record.viewCount);
-          percentage.push(record.percentage);
-        }
-        const bookoption = {
-          grid: {
-            left: '1%', // 距离容器左侧的距离
-            right: '4%', // 距离容器右侧的距离
-            bottom: '3%', // 距离容器底部的距离
-            containLabel: true // 设置为 true，防止标签溢出容器
-          },
-          title: {
-            text: '书本浏览量排行'
-          },
+        const option = {
           tooltip: {
-            trigger: 'item',
-            formatter: (params: any) => {
-              return `
-        浏览量: ${params.value}</br>
-        总占比: ${percentage[params.dataIndex]}%
-      `;
+            trigger: 'axis',
+            triggerOn:"mousemove",
+            axisPointer: {
+              type: 'shadow'
             }
           },
-          legend: {
-            data: ['浏览量']
-          },
+          dataset: [
+            {
+              dimensions: ['userName', 'age', 'profession', 'score', 'date'],
+              source: generateFakeData({numEntries: 10000})
+            }
+          ],
+          dataZoom: [
+            {
+              type: 'inside', // 同时启用内置型数据区域缩放
+              startValue: 0,       // 数据窗口范围的起始百分比
+              endValue: 30,       // 数据窗口范围的结束百分比，显示前10个数据点
+              zoomLock: true, // 禁止缩放
+              disableMouse: true, // 禁用鼠标滚轮控制
+            }
+          ],
+          // backgroundColor: '#0f375f',
           xAxis: {
             type: 'category',
-            boundaryGap: true,
-            data: xAxis,
-
-          },
-          yAxis: { type: 'value'},
-          series: [
-            {
-              name: '浏览量',
-              type: 'bar',
-              data: viewCount
+            axisLabel: {
+              interval: 0,
+              formatter: function (value: string) {
+                // 截取前10个字符，超出的部分显示为...
+                return value.length > 10 ? value.slice(0, 10) + '...' : value;
+              }
             }
-          ]
+          },
+          yAxis: {
+            splitLine: { show: false },
+            axisLine: {
+              lineStyle: {
+                color: '#ccc'
+              }
+            }
+          },
+          series: {
+            name:"飞行架次统计",
+            type: 'bar',
+            encode: { x: 'userName', y: 'score' },
+            barWidth: 15,
+            itemStyle: {
+              borderRadius: 5,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#83bff6' },
+                { offset: 0.5, color: '#188df0' },
+                { offset: 1, color: '#188df0' }
+              ])
+            },
+            datasetIndex: 0
+          }
         };
         // 使用刚指定的配置项和数据显示图表。
-        bookViewChart.setOption(bookoption);
+        bookViewChart.setOption(option);
       }
-      const selectbookView = () =>{
+      const selectbookview = () =>{
         axios.get("/ebook-snapshot/selectBookView").then((resp)=>{
-          const bookViewList = resp.data.content
-          console.log("bookViewList",bookViewList)
-          initbookView(bookViewList)
+          const bookviewList = resp.data.content
+          console.log("bookViewList",bookviewList)
+          initbookView(bookviewList)
         })
       }
 
@@ -367,14 +316,12 @@
       onMounted(() => {
         getStatistic();
         get30DayStatistic();
-        selectbookView();
-        selectvoteView();
+        selectbookview();
       });
 
       return {
         statistic,
-        initbookView,
-        selectvoteView
+        initbookView
       }
     }
   });

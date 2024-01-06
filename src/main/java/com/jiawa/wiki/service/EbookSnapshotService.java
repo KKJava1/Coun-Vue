@@ -3,7 +3,6 @@ package com.jiawa.wiki.service;
 import com.jiawa.wiki.controller.EbookSnapshotController;
 import com.jiawa.wiki.mapper.EbookSnapshotMapperCust;
 import com.jiawa.wiki.req.EbookViewReq;
-import com.jiawa.wiki.req.EbookVoteReq;
 import com.jiawa.wiki.resp.CommonResp;
 import com.jiawa.wiki.resp.StatisticResp;
 import com.jiawa.wiki.util.RedisUtil;
@@ -56,9 +55,5 @@ public class EbookSnapshotService {
 
     public List<EbookViewReq> selectBookView() {
         return ebookSnapshotMapperCust.selectBookView();
-    }
-
-    public List<EbookVoteReq> selectVoteView() {
-        return ebookSnapshotMapperCust.selectVoteView();
     }
 }

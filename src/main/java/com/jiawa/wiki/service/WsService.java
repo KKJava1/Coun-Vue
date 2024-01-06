@@ -13,9 +13,13 @@ public class WsService {
     @Resource
     public WebSocketServer webSocketServer;
 
-    @Async("taskExecutor")
+    @Async
     public void sendInfo(String message, String logId) {
         MDC.put("LOG_ID", logId);
-        webSocketServer.sendInfo(message);
+        webSocketServer.sendInfo("vote_type",message);
+    }
+
+    public void sendAddEbook(String message) {
+        webSocketServer.sendInfo("addEbook_type",message);
     }
 }
