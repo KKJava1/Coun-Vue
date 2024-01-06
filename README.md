@@ -18,7 +18,7 @@ Node.js：一个基于Chrome V8引擎的JavaScript运行环境。Node.js 使用�
 Axios：一个基于promise的HTTP库，可以用于浏览器和node.js，提供了丰富的HTTP请求API，可满足多种需求。   
 Ant Design Vue：是一套基于Vue.js的高质量UI组件库，用于快速构建企业级中后台产品界面。   
 Webpack：一款模块打包工具，能将许多分散的模块按照依赖关系进行打包，生成优化后的静态资源。   
-##软件架构
+## 软件架构
 该项目基于Springboot+Vue3开发模式，主要模拟实现电子书平台系统。使用Interceptor过滤器进行登录校验，允许已登录用户管理书籍。用户可进行点赞，通过websocket实现点赞通知，设置定时任务定时更新点赞和阅读数。利用axio+json与后端数据交互，通过Echarts图表显示分析后的数据，使读者可以清晰地看到30天内的用户访问曲线图。
 
 ## 项目特点
